@@ -10,9 +10,31 @@ const usersModule = require(appPath+'/src/modules/usersModule.js');
 
 $(document).ready(()=>{
     // Load users
-    usersModule.loadUsers((err, result)=>{
-        console.log(result);
-        $('#usersDiv').html(result);
+    usersModule.loadUsers((err, rows)=>{
+        if(err) {
+            $('#usersDiv').html(err);
+        } else {
+            // Table
+            let resultHTML = `<table class="table table-sm table-light">
+                                <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>Username</th>
+                                        <th>Usertype</th>
+                                    </tr>
+                                </thead>`;
+
+            for(let i=0 ; i<rows.length ; i++) {
+                resultHTML += `<tr>
+                                    <td>${i+1}</td>
+                                    <td>${rows[i].username}</td>
+                                    <td>${rows[i].usertypeID}</td>
+                                </tr>`;
+            }
+            resultHTML += '</table>';
+            $('#usersDiv').html(resultHTML);
+            
+        }
     });
 
     $('#sidebarCollapse').on('click', function () {

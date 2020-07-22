@@ -1,10 +1,12 @@
+const db = require('sqlite3-wrapper').open('./skeleton.db');
 let sqlite3 = require('sqlite3');
 
-exports.loadUsers = (callback) => {
+exports.loadUsersBacup = (callback) => {
     var resultHTML = '';
 
     let db = new sqlite3.Database('./skeleton.db', sqlite3.OPEN_READWRITE, (err)=>{
         if(err) {
+            callback('Error: Cannot access database', null);
             console.log(err);
         } else {
             console.log('Successfully connected to DB');
@@ -13,14 +15,11 @@ exports.loadUsers = (callback) => {
 
     db.serialize(() => {
         var resultHTML;
-        db.each(`SELECT * FROM users`, (err, row) => {
+        db.all(`SELECT * FROM users`, (err, rows) => {
             if (err) {
-                console.log(err);
-                return(err.message);
+                callback(err, null);
             }
-            resultHTML += (row.id + "\t" + row.username);
-            console.log(resultHTML);
-            callback('', resultHTML);
+            callback(null, rows);
         });
     });    
 
@@ -31,5 +30,11 @@ exports.loadUsers = (callback) => {
         } else {
             console.log('Close the database connection.');
         }
+    });
+}
+
+exports.loadUsers = (callback) => {
+    db.select("SELECT * FORM users", function(err, rows) {
+        callback(err, rows);
     });
 }

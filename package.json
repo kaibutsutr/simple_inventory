@@ -10,6 +10,7 @@
   "license": "",
   "dependencies": {
     "electron": "^9.1.1",
-    "sqlite3": "^5.0.0"
+    "sqlite3": "^5.0.0",
+    "sqlite3-wrapper": "^1.1.1"
   }
 }
