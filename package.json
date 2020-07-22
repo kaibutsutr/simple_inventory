@@ -1,0 +1,15 @@
+{
+  "name": "simple_inventory",
+  "version": "1.0.0",
+  "description": "Simple inventory software using Electron.JS and SQLite",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "jacobmathewin",
+  "license": "",
+  "dependencies": {
+    "electron": "^9.1.1",
+    "sqlite3": "^5.0.0"
+  }
+}
