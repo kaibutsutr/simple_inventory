@@ -2,7 +2,7 @@
 <html>
    <head>
       <meta charset = "UTF-8">
-      <title>Hello World!</title>
+      <title>Simple Inventory</title>
 
       <!-- Bootstrap loading -->
       <link rel="stylesheet" href="../lib/bootstrap-4.0.0/dist/css/bootstrap.css" />
@@ -20,37 +20,11 @@
             <!-- Sidebar -->
             <nav id="sidebar">
                 <div class="sidebar-header">
-                    <h3>Corrugator Utilities</h3>
+                    <h3>Simple Inventory</h3>
                 </div>
 
-                <ul class="list-unstyled components">
-                    <li class="active">
-                        <a href="#">Deckle Match</a>
-                    </li>
-                    <li>
-                        <a href="#">RCT Converter</a>
-                    </li>
-                    <li>
-                        <a href="#settingsSubMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                            <i class="fas fa-cog"></i>
-                            Settings
-                        </a>
-                        <ul class="collapse list-unstyled" id="settingsSubMenu">
-                            <li>
-                                <a href="#">Min/Max Deckle</a>
-                            </li>
-                            <li>
-                                <a href="#">Shades</a>
-                            </li>
-                            <li>
-                                <a href="#">Reel Dia</a>
-                            </li>
-                            <li>
-                                <a href="#">Email settings</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
+                <div id="menuHolder">
+                </div>
             </nav>
 
             <div id="content">
@@ -63,102 +37,8 @@
                     </div>
                 </nav>
 
-                <div class="container-fluid" style="padding:20px; ">
-                    <div class="text-center">
-                        <h3>Deckle Matching</h3>
-                        <p>Please enter product details (BF, GSM, Shade etc.) and Size details to calculate deckle!</p>
-                        <div class="alert alert-warning alert-dismissible fade hide" role="alert" id="alertContainer">
-                            <span id="alertMessage"></span>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                    </div>
+                <div class="container-fluid" style="padding:20px; min-width:1000px;">
 
-                    <div class="row">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="">Min/Max Deckle</span>
-                            </div>
-                            <input type="text" class="form-control text-center inputField" id="minDeckle" value="290">
-                            <input type="text" class="form-control text-center inputField" id="maxDeckle" value="308">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="">Product Details</span>
-                            </div>
-                            <input type="text" class="form-control text-center inputField" placeholder="BF" id="bf" required>
-                            <input type="text" class="form-control text-center inputField" placeholder="GSM" id="gsm" required>
-
-                            <select class="custom-select inputField" style="text-align-last: center;" id="shade" not-required>
-                                <option value="">Shade</option>
-                                <option selected value="1">Natural</option>
-                                <option value="2">GYT</option>
-                            </select>
-
-                            <select class="custom-select inputField" style="text-align-last: center;" id="reelDia">
-                                <option value="">Reel size</option>
-                                <option selected value="3.5">Small (75 cm)</option>
-                                <option value="4.2">Medium (85 cm)</option>
-                                <option value="5">Large (95 cm)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="input-group mb-3 has-warning">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="">Size Details</span>
-                            </div>
-                            <input type="text" class="form-control text-center inputField" id="size1" />
-                            <input type="text" class="form-control text-center inputField" id="size2" />
-                            <input type="text" class="form-control text-center inputField" id="size3" />
-                            <input type="text" class="form-control text-center inputField" id="size4" />
-                            <input type="text" class="form-control text-center inputField" id="size5" />
-                            <input type="text" class="form-control text-center" style="font-weight:bold;" disabled value="0" id="totalSize">
-                            <input type="text" class="form-control text-center inputField" id="noOfSets" style="font-weight:bold;" placeholder="# of sets" value="1" />
-                            <input type="text" class="form-control text-center" disabled value="sets">
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button class="btn btn-secondary" type="button" id="calculateButton">Calculate</button>
-                    </div>
-                </div>
-                <div class="container-fluid text-center" id="resultDivParent" style="display:none;">
-                    <br />
-                    <b>Calculation Results</b>
-                    <div id="resultDiv">
-                        
-                    </div>
-                    <br />
-                </div>
-                <div class="container-fluid text-center d-none" id="savedDivParent">
-                    <br />
-                    <b>Saved Deckles</b>
-                    <br />
-                    <div class="text-right">
-                        <button class="btn btn-sm btn-secondary" id="emailButton">
-                            <i class="fas fa-email"></i>
-                            Email
-                        </button>
-                        <button class="btn btn-sm btn-secondary" id="printButton">
-                            <i class="fas fa-print"></i>
-                            Print
-                        </button>
-                        <button class="btn btn-sm btn-secondary disabled" id="deleteButton">
-                            <i class="fas fa-trash"></i> 
-                            Delete
-                        </button>
-                    </div>
-                    <br />
-                    <div id="savedDiv">
-
-                    </div>
-                    <br />
                 </div>
             </div>
         </div>

@@ -16,7 +16,7 @@ app.on('ready', ()=>{
         }
     });
 
-    win.loadFile(appPath+'/src/html/template.html');
+    win.loadFile(appPath+'/src/html/index.html');
 
     // win.webContents.openDevTools();
 

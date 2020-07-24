@@ -1,7 +1,6 @@
-const db = require('sqlite3-wrapper').open('./skeleton.db');
 let sqlite3 = require('sqlite3');
 
-exports.loadUsersBacup = (callback) => {
+exports.loadUsers = (callback) => {
     var resultHTML = '';
 
     let db = new sqlite3.Database('./skeleton.db', sqlite3.OPEN_READWRITE, (err)=>{
@@ -30,11 +29,5 @@ exports.loadUsersBacup = (callback) => {
         } else {
             console.log('Close the database connection.');
         }
-    });
-}
-
-exports.loadUsers = (callback) => {
-    db.select("SELECT * FORM users", function(err, rows) {
-        callback(err, rows);
     });
 }

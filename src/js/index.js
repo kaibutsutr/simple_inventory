@@ -7,15 +7,22 @@ const myPath = app.getPath('userData');
 const appPath = app.getAppPath();
 
 const usersModule = require(appPath+'/src/modules/usersModule.js');
+const commonModule = require(appPath+'/src/modules/commonModule.js');
 
 $(document).ready(()=>{
+
+    // Load side menu
+    commonModule.loadSideMenu('index', (err, html)=>{
+        $('#menuHolder').html(html);
+    });
+
     // Load users
     usersModule.loadUsers((err, rows)=>{
         if(err) {
             $('#usersDiv').html(err);
         } else {
             // Table
-            let resultHTML = `<table class="table table-sm table-light">
+            let resultHTML = `<table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
                                         <th>S.No.</th>
@@ -39,5 +46,6 @@ $(document).ready(()=>{
 
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
+    });
 });
-});
+
