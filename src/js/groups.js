@@ -12,11 +12,6 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
-
     inventoryModule.getGroups((err, result) => {
         if(err) {
             $('#contentDiv').html('Error fetching data!');
@@ -50,7 +45,6 @@ $(document).ready(()=>{
             $('#contentDiv').html(resultHTML);
         }
     })
-
 });
 
 $(document).on("click","tr.groupRow", function(e){
