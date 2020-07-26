@@ -50,7 +50,7 @@ ipcMain.on('open-new-window', (event, fileName, params, width, height)=>{
         }
     });
     tempWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
-    tempWindow.webContents.openDevTools();
+    // tempWindow.webContents.openDevTools();
     tempWindow.once('ready-to-show', ()=>{
         tempWindow.webContents.send('params', params);
     })

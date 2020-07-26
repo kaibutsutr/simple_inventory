@@ -58,6 +58,41 @@ exports.update = (tableName, whereCondition, dataObject, callback) => {
         }
     });
 
-    callback('', true);
+}
 
+exports.insert = (tableName, data, callback) => {
+
+    let db = new sqlite3.Database(dbName, sqlite3.OPEN_READWRITE, (err)=>{
+        if(err) {
+            callback(err, null);
+        }
+    });
+
+    let columns = '';
+    let values = '';
+    // Prepare columns and values
+    for(let key in data) {
+        if(columns!='') {
+            columns += ',';
+            values += ',';
+        }
+        columns += key;
+        values += `'${data[key]}'`;
+    }
+
+    db.run(`INSERT INTO ${tableName} (${columns}) VALUES (${values})`, [], (err, result) => {
+
+        if(err)
+            callback(err, null);
+        else
+            callback('', 'success');
+    });
+
+
+    // close the DB
+    db.close((err) => {
+        if (err) {
+            callback(err);
+        }
+    });
 }

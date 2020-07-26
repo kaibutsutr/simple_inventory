@@ -124,3 +124,11 @@ tr.selectedRow td {
 #savedDivParent {
     background-color: #d2e6ec;
 }
+
+.bg-dark {
+    color: #fff;
+}
+
+.bg-dark a {
+    color: #fff;
+}

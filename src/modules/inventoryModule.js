@@ -61,6 +61,12 @@ exports.getGroups = (callback) => {
     });    
 }
 
+exports.getSubgroups = (callback) => {
+    dbModule.selectQuery('SELECT * FROM subgroups ORDER BY name ASC', function(err, rows) {
+        callback(err, rows);
+    });    
+}
+
 exports.getGroup = (groupID, callback) => {
     dbModule.selectQuery('SELECT * FROM groups WHERE id = '+groupID, function(err, rows) {
         console.log(rows);
@@ -70,6 +76,18 @@ exports.getGroup = (groupID, callback) => {
 
 exports.editGroup = (groupID, data, callback) => {
     dbModule.update('groups', 'id='+groupID, data, function(err, result) {
+        callback(err, result);
+    });
+}
+
+exports.createGroup = (data, callback) => {
+    dbModule.insert('groups', data, function(err, result) {
+        callback(err, result);
+    });
+}
+
+exports.createSubgroup = (data, callback) => {
+    dbModule.insert('subgroups', data, function(err, result) {
         callback(err, result);
     });
 }

@@ -43,6 +43,10 @@ $(document).ready(()=>{
             }
             resultHTML += `</tbody>
                     </table>`;
+            resultHTML += `<br />
+                            <div class="container text-center">
+                                <button class="btn btn-secondary" onclick="newGroup()">New Group</button>
+                            </div>`;
             $('#contentDiv').html(resultHTML);
         }
     })
@@ -58,3 +62,6 @@ window.onerror = function(error, url, line) {
     ipcRenderer.send('error-in-window', error);
 };
 
+function newGroup() {
+    ipcRenderer.send('open-new-window', 'groupsDialogNew.html', [], 800, 600);
+}
