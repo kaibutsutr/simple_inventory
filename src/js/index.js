@@ -6,8 +6,8 @@ const app = remote.app;
 const myPath = app.getPath('userData');
 const appPath = app.getAppPath();
 
-const usersModule = require(appPath+'/src/modules/usersModule.js');
 const commonModule = require(appPath+'/src/modules/commonModule.js');
+const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 
 $(document).ready(()=>{
 
@@ -16,36 +16,65 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
-    // Load users
-    usersModule.loadUsers((err, rows)=>{
+    inventoryModule.getCurrentInventory(function(err, result) {
         if(err) {
-            $('#usersDiv').html(err);
+            console.log(err);
+            $('#contentDiv').html('Error occured!');
         } else {
-            // Table
             let resultHTML = `<table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
-                                        <th>S.No.</th>
-                                        <th>Username</th>
-                                        <th>Usertype</th>
+                                        <th>Group</th>
+                                        <th>Subgroup</th>
+                                        <th>Item</th>
+                                        <th>Closing Stock</th>
                                     </tr>
-                                </thead>`;
-
-            for(let i=0 ; i<rows.length ; i++) {
+                                </thead>
+                                <tbody>`;
+            let groups, subgroups, items, inventory;
+            [groups, subgroups, items, inventory] = result;
+            for(let groupKey in groups) {
                 resultHTML += `<tr>
-                                    <td>${i+1}</td>
-                                    <td>${rows[i].username}</td>
-                                    <td>${rows[i].usertypeID}</td>
+                                    <td>${groups[groupKey].name}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>`;
+                for(let subgroupKey in subgroups) {
+                    if(subgroups[subgroupKey].groupID == groups[groupKey].id) {
+                        resultHTML += `<tr>
+                                            <td></td>
+                                            <td>${subgroups[subgroupKey].name}</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>`;
+                        for(let itemKey in items) {
+                            if(items[itemKey].subgroupID == subgroups[subgroupKey].groupID) {
+                                let currentInventory = 0;
+                                if(inventory[items[itemKey].id])
+                                    currentInventory = inventory[items[itemKey].id];
+                                resultHTML += `<tr> 
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td>${items[itemKey].name}</td>
+                                                    <td>${currentInventory}</td>
+                                                </tr>`;
+                            }
+                        }
+                    }
+                }
             }
-            resultHTML += '</table>';
-            $('#usersDiv').html(resultHTML);
-            
+            resultHTML += `</tbody></table>`;
+            $('#contentDiv').html(resultHTML);
         }
     });
+
 
     $('#sidebarCollapse').on('click', function () {
         $('#sidebar').toggleClass('active');
     });
 });
 
+window.onerror = function(error, url, line) {
+    console.log(error);
+};

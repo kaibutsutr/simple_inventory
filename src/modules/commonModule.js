@@ -5,11 +5,11 @@ exports.loadSideMenu = function(currentPage, callback) {
                                 Inventory
                             </a>
                             <ul class="collapse list-unstyled" id="inventoryMenu">
-                                <li>
-                                    <a href="#">Current Inventory</a>
+                                <li class="active">
+                                    <a href="index.html">Current Inventory</a>
                                 </li>
                                 <li>
-                                    <a href="#">Inventory Transactions</a>
+                                    <a href="inventoryTransactions.html">Inventory Transactions</a>
                                 </li>
                             </ul>
                         </li>
@@ -19,13 +19,13 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse list-unstyled" id="masterMenu">
                                 <li>
-                                    <a href="#">Groups</a>
+                                    <a href="groups.html">Groups</a>
                                 </li>
                                 <li>
-                                    <a href="#">Subgroups</a>
+                                    <a href="subgroups.html">Subgroups</a>
                                 </li>
                                 <li>
-                                    <a href="#">Items</a>
+                                    <a href="items.html">Items</a>
                                 </li>
                             </ul>
                         </li>
@@ -35,10 +35,10 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse list-unstyled" id="valuationsMenu">
                                 <li>
-                                    <a href="#">Saved Valuations</a>
+                                    <a href="valuations.html">Saved Valuations</a>
                                 </li>
                                 <li>
-                                    <a href="#">New Valuation</a>
+                                    <a href="newValuations.html">New Valuation</a>
                                 </li>
                             </ul>
                         </li>
@@ -48,10 +48,10 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse list-unstyled" id="usersMenu">
                                 <li>
-                                    <a href="template.html">Users</a>
+                                    <a href="users.html">Users</a>
                                 </li>
                                 <li>
-                                    <a href="#">Usergroups</a>
+                                    <a href="userGroups.html">Usergroups</a>
                                 </li>
                             </ul>
                         </li>
@@ -61,16 +61,16 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse list-unstyled" id="accountMenu">
                                 <li>
-                                    <a href="#">My Account</a>
+                                    <a href="myAccount.html">My Account</a>
                                 </li>
                                 <li>
-                                    <a href="#">Logout</a>
+                                    <a href="logout.html">Logout</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>`;
-    if(currentPage=='index')
-        callback(null, resultHTML);
+
+    callback(null, resultHTML);
 }
 
 exports.saveToFile = function(data, filePath) {

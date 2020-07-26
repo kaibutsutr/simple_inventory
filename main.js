@@ -5,7 +5,7 @@ const appPath = app.getAppPath();
 
 const commonModule = require(__dirname+'/src/modules/commonModule.js');
 
-let win;
+var win;
 
 app.on('ready', ()=>{
     win = new BrowserWindow({
@@ -17,6 +17,10 @@ app.on('ready', ()=>{
     });
 
     win.loadFile(appPath+'/src/html/index.html');
+
+    win.webContents.on('crashed', (e) => {
+        console.log(e);
+    });
 
     // win.webContents.openDevTools();
 
@@ -36,7 +40,23 @@ app.on('activate', ()=>{
     }
 });
 
-ipcMain.on('open-new-window', (event, fileName)=>{
-    let win = new BrowserWindow();
-    win.loadURL(`file://${__dirname}/src/components/${fileName}`);
+ipcMain.on('open-new-window', (event, fileName, params, width, height)=>{
+    let tempWindow = new BrowserWindow({
+        width, 
+        height, 
+        webPreferences: {
+            nodeIntegration:true,
+            additionalArguments: params
+        }
+    });
+    tempWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
+    tempWindow.webContents.openDevTools();
+    tempWindow.once('ready-to-show', ()=>{
+        tempWindow.webContents.send('params', params);
+    })
+    tempWindow.setAlwaysOnTop(false);
+});
+
+ipcMain.on('error-in-window', function(event, data) {
+    console.log(data);
 });
