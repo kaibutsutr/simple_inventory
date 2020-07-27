@@ -49,7 +49,7 @@ $(document).ready(()=>{
                                             <td></td>
                                         </tr>`;
                         for(let itemKey in items) {
-                            if(items[itemKey].subgroupID == subgroups[subgroupKey].groupID) {
+                            if(items[itemKey].subgroupID == subgroups[subgroupKey].id) {
                                 let currentInventory = 0;
                                 if(inventory[items[itemKey].id])
                                     currentInventory = inventory[items[itemKey].id];

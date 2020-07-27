@@ -1,6 +1,5 @@
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
-const app = remote.app;
 
 const commonModule = require('../../src/modules/commonModule.js');
 const inventoryModule = require('../../src/modules/inventoryModule.js');
@@ -17,7 +16,13 @@ $(document).ready(()=>{
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<table class="table table-sm table-light table-hover">
+            let resultHTML = `<div class="container text-left">
+                                <button class="btn btn-outline-secondary" onclick="newGroup()">
+                                    <i class="fas fa-plus-circle"></i> New Group
+                                </button>
+                            </div>
+                            <br />
+                            <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
                                         <th>S.No.</th>
@@ -38,10 +43,6 @@ $(document).ready(()=>{
             }
             resultHTML += `</tbody>
                     </table>`;
-            resultHTML += `<br />
-                            <div class="container text-center">
-                                <button class="btn btn-secondary" onclick="newGroup()">New Group</button>
-                            </div>`;
             $('#contentDiv').html(resultHTML);
         }
     })

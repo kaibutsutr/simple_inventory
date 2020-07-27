@@ -7,7 +7,7 @@ const appPath = app.getAppPath();
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 
-var groupID;
+var subgroupID;
 
 $(document).ready(()=>{
 
@@ -15,11 +15,11 @@ $(document).ready(()=>{
     for(let needle of additionalArgs) {
         if(needle.search('id=')===0) {
             let temp = needle.split('=');
-            groupID = temp[1];
+            subgroupID = temp[1];
         }
     }
 
-    inventoryModule.getGroup(groupID, function(err, result) {
+    inventoryModule.getSubgroup(subgroupID, function(err, result) {
         if(err) {
             console.log(err);
             $('#contentDiv').html('Error has occured!');    
@@ -29,15 +29,23 @@ $(document).ready(()=>{
                                 </div>
                                 <div class="form-group row" style="width:100%;">
                                     <div class="col-md-6 col-lg-6 text-right">
-                                        Group Name
+                                        Subgroup Name
                                     </div>
                                     <div class="col-md-6 col-lg-6">
                                         <b>${result[0].name}</b>
                                     </div>
                                 </div>
+                                <div class="form-group row" style="width:100%;">
+                                    <div class="col-md-6 col-lg-6 text-right">
+                                        Group
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <b>${result[0].groupName}</b>
+                                    </div>
+                                </div>
                                 <div class="container text-center" style="width:100%">
-                                    <input type="hidden" name="groupID" id="groupID" value="${groupID}" />
-                                    <button class="btn btn-secondary" id="editGroup" onclick="editGroup(${groupID})">Edit</button>
+                                    <input type="hidden" name="groupID" id="groupID" value="${subgroupID}" />
+                                    <button class="btn btn-secondary" id="editGroup" onclick="editSubgroup(${subgroupID})">Edit</button>
                                     <button class="btn btn-secondary" id="cancelButton" onclick="cancelDialog()">Cancel</button>
                                 </div>`;
             $('#contentDiv').html(resultHTML);
@@ -45,9 +53,9 @@ $(document).ready(()=>{
     });
 });
 
-function editGroup(groupID) {
+function editSubgroup(subgroupID) {
     let tempWindow = remote.getCurrentWindow();
-    ipcRenderer.send('open-new-window', 'groupsDialogEdit.html', [`id=${groupID}`], 800, 600);
+    ipcRenderer.send('open-new-window', 'subgroupsDialogEdit.html', [`id=${subgroupID}`], 800, 600);
 }
 
 window.onerror = function(error, url, line) {

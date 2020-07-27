@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, ipcMain, dialog} = require('electron');
 const url = require('url');
 const path = require('path');
 const appPath = app.getAppPath();
@@ -6,6 +6,7 @@ const appPath = app.getAppPath();
 const commonModule = require(__dirname+'/src/modules/commonModule.js');
 
 var win;
+var dialogWindow;
 
 app.on('ready', ()=>{
     win = new BrowserWindow({
@@ -40,21 +41,32 @@ app.on('activate', ()=>{
     }
 });
 
-ipcMain.on('open-new-window', (event, fileName, params, width, height)=>{
-    let tempWindow = new BrowserWindow({
-        width, 
-        height, 
-        webPreferences: {
-            nodeIntegration:true,
-            additionalArguments: params
-        }
-    });
-    tempWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
-    // tempWindow.webContents.openDevTools();
-    tempWindow.once('ready-to-show', ()=>{
-        tempWindow.webContents.send('params', params);
-    })
-    tempWindow.setAlwaysOnTop(false);
+ipcMain.on('open-new-window', (event, fileName, params, width, height) => {
+    console.log(dialogWindow);
+    if(!dialogWindow) {
+        dialogWindow = new BrowserWindow({
+            width:800, 
+            height:600, 
+            webPreferences: {
+                nodeIntegration:true,
+                additionalArguments: params
+            }
+        });
+    }
+    try {
+        dialogWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
+    } catch(e) {
+        dialogWindow = new BrowserWindow({
+            width:800, 
+            height:600, 
+            webPreferences: {
+                nodeIntegration:true,
+                additionalArguments: params
+            }
+        });
+        dialogWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
+    }
+    dialogWindow.setAlwaysOnTop(false);
 });
 
 ipcMain.on('error-in-window', function(event, data) {

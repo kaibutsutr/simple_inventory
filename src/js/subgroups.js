@@ -17,36 +17,48 @@ $(document).ready(()=>{
         $('#sidebar').toggleClass('active');
     });
 
-    inventoryModule.getSubgroups((err, result) => {
+    inventoryModule.getGroupsAndSubgroups((err, result) => {
         if(err) {
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<table class="table table-sm table-light table-hover">
+            let groups = result[0];
+            let subgroups = result[1];
+            let groupsArray = [];
+            for(let i in groups) {
+                if(groups[i].id)
+                    groupsArray[groups[i].id] = groups[i].name;
+            }
+
+            let resultHTML = `<div class="container text-left">
+                                <button class="btn btn-outline-secondary" onclick="newSubgroup()">
+                                    <i class="fas fa-plus-circle"></i> New Subgroup
+                                </button>
+                            </div>
+                            <br />
+                            <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
                                         <th>S.No.</th>
-                                        <th>Name</th>
+                                        <th>Subgroup</th>
+                                        <th>Group</th>
                                     </tr>
                                 </thead>
                                 <tbody>`;
 
             let count = 0;
-            for(let key in result) {
-                if(result[key].id) {
+            for(let key in subgroups) {
+                if(subgroups[key].id) {
                     count++;
-                    resultHTML += `<tr class="groupRow clickable" id="row_${result[key].id}">
+                    resultHTML += `<tr class="groupRow clickable" id="row_${subgroups[key].id}">
                                         <td>${count}</td>
-                                        <td>${result[key].name}</td>
+                                        <td>${subgroups[key].name}</td>
+                                        <td>${groupsArray[subgroups[key].groupID]}</td>
                                     </tr>`;
                 }
             }
             resultHTML += `</tbody>
                     </table>`;
-            resultHTML += `<br />
-                            <div class="container text-center">
-                                <button class="btn btn-secondary" onclick="newSubgroup()">New Subgroup</button>
-                            </div>`;
             $('#contentDiv').html(resultHTML);
         }
     })
