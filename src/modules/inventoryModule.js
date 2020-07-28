@@ -32,7 +32,7 @@ exports.getCurrentInventory = (callback) => {
     });
 
     inventoryQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT itemID, SUM(receipts) as closingStock FROM entries', function(err, rows) {
+        dbModule.selectQuery('SELECT itemID, SUM(receipts) as closingStock FROM entries GROUP BY itemID', function(err, rows) {
             if(err) {
                 reject(err);
             } else {
@@ -45,7 +45,17 @@ exports.getCurrentInventory = (callback) => {
         });
     });
 
-    Promise.all([groupsQuery, subgroupsQuery, itemsQuery, inventoryQuery])
+    uomQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery('SELECT * FROM uom', (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    Promise.all([groupsQuery, subgroupsQuery, itemsQuery, inventoryQuery, uomQuery])
             .then((results)=>{
                 callback('', results);
             })
@@ -94,6 +104,12 @@ exports.createSubgroup = (data, callback) => {
 
 exports.createItem = (data, callback) => {
     dbModule.insert('items', data, function(err, result) {
+        callback(err, result);
+    });
+}
+
+exports.createUOM = (data, callback) => {
+    dbModule.insert('uom', data, function(err, result) {
         callback(err, result);
     });
 }
@@ -244,6 +260,16 @@ exports.getItem = (itemID, callback) => {
             } else {
                 callback('', rows);
             }
+        }
+    });
+}
+
+exports.getUOMs = (callback) => {
+    dbModule.selectQuery('SELECT * FROM uom ORDER BY name ASC', (err, result) => {
+        if(err) {
+            callback(err);
+        } else {
+            callback('', result);
         }
     });
 }

@@ -21,6 +21,14 @@ $(document).ready(()=>{
             console.log(err);
             $('#contentDiv').html('Error occured!');
         } else {
+            let groups, subgroups, items, inventory, uoms;
+            [groups, subgroups, items, inventory, uoms] = result;
+
+            let uomArray = [];
+            for(let i in uoms) {
+                uomArray[uoms[i].id] = uoms[i];
+            }
+
             let resultHTML = `<table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
@@ -31,8 +39,6 @@ $(document).ready(()=>{
                                     </tr>
                                 </thead>
                                 <tbody>`;
-            let groups, subgroups, items, inventory;
-            [groups, subgroups, items, inventory] = result;
             for(let groupKey in groups) {
                 resultHTML += `<tr>
                                     <td>${groups[groupKey].name}</td>
@@ -56,8 +62,8 @@ $(document).ready(()=>{
                                 resultHTML += `<tr> 
                                                     <td></td>
                                                     <td></td>
-                                                    <td>${items[itemKey].name}</td>
-                                                    <td>${currentInventory}</td>
+                                                    <td><b>${items[itemKey].name}</b></td>
+                                                    <td style="text-align:right;"><b>`+commonModule.uomFormat(currentInventory, uomArray[items[itemKey].uomID])+`</b></td>
                                                 </tr>`;
                             }
                         }

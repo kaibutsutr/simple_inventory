@@ -27,6 +27,9 @@ exports.loadSideMenu = function(currentPage, callback) {
                                 <li>
                                     <a href="items.html">Items</a>
                                 </li>
+                                <li>
+                                    <a href="uom.html">UOM</a>
+                                </li>
                             </ul>
                         </li>
                         <li>
@@ -142,4 +145,17 @@ exports.showAlert = function(msg) {
     $("#alertContainer").fadeTo(2000, 500).slideUp(500, function(){
         $("#alertContainer").slideUp(500);
     });
+}
+
+exports.uomFormat = function(qty, uom) {
+    if(uom) {
+        return `${(uom.prefix ? uom.prefix : '')} ${(commonModule.indianNumberFormat(qty, 2))} ${(uom.postfix ? uom.postfix : '')}`;
+    } else {
+        return qty;
+    }
+}
+
+exports.indianNumberFormat = function(num, roundoff) {
+    let test = num.toLocaleString('en-IN', {maximumFractionDigits: roundoff});
+    return(test);
 }
