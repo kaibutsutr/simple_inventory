@@ -67,6 +67,10 @@ ipcMain.on('open-new-window', (event, fileName, params, width, height) => {
         dialogWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
     }
     dialogWindow.setAlwaysOnTop(false);
+
+    dialogWindow.on('close', ()=>{
+        win.reload();
+    })
 });
 
 ipcMain.on('error-in-window', function(event, data) {

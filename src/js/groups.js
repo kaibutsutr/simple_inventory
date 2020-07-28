@@ -1,4 +1,3 @@
-const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 
 const commonModule = require('../../src/modules/commonModule.js');
@@ -46,6 +45,10 @@ $(document).ready(()=>{
             $('#contentDiv').html(resultHTML);
         }
     })
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
 });
 
 $(document).on("click","tr.groupRow", function(e){

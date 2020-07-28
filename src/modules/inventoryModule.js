@@ -108,6 +108,12 @@ exports.createItem = (data, callback) => {
     });
 }
 
+exports.editItem = (itemID, data, callback) => {
+    dbModule.update('items', 'id='+itemID, data, function(err, result) {
+        callback(err, result);
+    });
+}
+
 exports.createUOM = (data, callback) => {
     dbModule.insert('uom', data, function(err, result) {
         callback(err, result);
@@ -264,6 +270,47 @@ exports.getItem = (itemID, callback) => {
     });
 }
 
+exports.getItemForEdit = (itemID, callback) => {
+
+    itemsQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT * FROM items WHERE id = '${itemID}'`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    subgroupsQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName FROM subgroups INNER JOIN groups ON subgroups.groupID = groups.id ORDER BY subgroups.groupID`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    uomQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery('SELECT * FROM uom', (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    Promise.all([itemsQuery, subgroupsQuery, uomQuery])
+            .then((results)=>{
+                callback('', results);
+            })
+            .catch((err)=>{
+                callback(err);
+            });
+}
+
 exports.getUOMs = (callback) => {
     dbModule.selectQuery('SELECT * FROM uom ORDER BY name ASC', (err, result) => {
         if(err) {
@@ -271,5 +318,21 @@ exports.getUOMs = (callback) => {
         } else {
             callback('', result);
         }
+    });
+}
+
+exports.getUOM = (uomID, callback)=>{
+    dbModule.selectQuery(`SELECT * FROM uom WHERE id = '${uomID}'`, (err, result) => {
+        if(err) {
+            callback(err);
+        } else {
+            callback('', result);
+        }
+    });
+}
+
+exports.editUOM = (uomID, data, callback) => {
+    dbModule.update('uom', 'id='+uomID, data, function(err, result) {
+        callback(err, result);
     });
 }

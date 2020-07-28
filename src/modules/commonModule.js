@@ -6,7 +6,10 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse list-unstyled" id="inventoryMenu">
                                 <li class="active">
-                                    <a href="index.html">Current Inventory</a>
+                                    <a href="index.html">
+                                        <i class="fas fa-university"></i>
+                                        Current Inventory
+                                    </a>
                                 </li>
                                 <li>
                                     <a href="inventoryTransactions.html">Inventory Transactions</a>
@@ -19,13 +22,13 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse list-unstyled" id="masterMenu">
                                 <li>
-                                    <a href="groups.html">Groups</a>
+                                    <a href="groups.html"><i class="fas fa-folder-open"></i> Groups</a>
                                 </li>
                                 <li>
-                                    <a href="subgroups.html">Subgroups</a>
+                                    <a href="subgroups.html"><i class="fas fa-dot-circle-o"></i> Subgroups</a>
                                 </li>
                                 <li>
-                                    <a href="items.html">Items</a>
+                                    <a href="items.html"><i class="fas fa-file-circle-thin"></i> Items</a>
                                 </li>
                                 <li>
                                     <a href="uom.html">UOM</a>
@@ -149,13 +152,13 @@ exports.showAlert = function(msg) {
 
 exports.uomFormat = function(qty, uom) {
     if(uom) {
-        return `${(uom.prefix ? uom.prefix : '')} ${(commonModule.indianNumberFormat(qty, 2))} ${(uom.postfix ? uom.postfix : '')}`;
+        return `${(uom.prefix ? uom.prefix : '')} ${(commonModule.indianNumberFormat(qty, uom.roundoff))} ${(uom.postfix ? uom.postfix : '')}`;
     } else {
         return qty;
     }
 }
 
 exports.indianNumberFormat = function(num, roundoff) {
-    let test = num.toLocaleString('en-IN', {maximumFractionDigits: roundoff});
+    let test = num.toLocaleString('en-IN', {maximumFractionDigits: roundoff, minimumFractionDigits:roundoff});
     return(test);
 }

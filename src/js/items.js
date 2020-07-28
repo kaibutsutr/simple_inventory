@@ -11,6 +11,10 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
+
     inventoryModule.getItems((err, result) => {
         if(err) {
             $('#contentDiv').html('Error fetching data!');
