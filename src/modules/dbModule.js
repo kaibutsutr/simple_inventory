@@ -1,4 +1,4 @@
-let sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3').verbose();
 const dbName = './skeleton.db';
 
 exports.selectQuery = (query, callback) => {

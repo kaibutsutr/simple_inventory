@@ -41,8 +41,11 @@ app.on('activate', ()=>{
     }
 });
 
+ipcMain.on('redirect-window', (event, fileName, params)=>{
+    win.loadURL(`file://${__dirname}/src/html/${fileName}`);
+});
+
 ipcMain.on('open-new-window', (event, fileName, params, width, height) => {
-    console.log(dialogWindow);
     if(!dialogWindow) {
         dialogWindow = new BrowserWindow({
             width:800, 
