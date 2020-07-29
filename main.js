@@ -18,7 +18,7 @@ app.on('ready', ()=>{
         }
     });
 
-    win.loadFile(appPath+'/src/html/index.html');
+    win.loadFile(appPath+'/src/html/login.html');
 
     win.webContents.on('crashed', (e) => {
         console.log(e);

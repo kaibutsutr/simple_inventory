@@ -1,0 +1,35 @@
+Hello!
+
+<script>
+    const {session} = require('electron').remote;
+    // console.log(session);
+    // // Query all cookies.
+    // session.defaultSession.cookies.get({})
+    // .then((cookies) => {
+    //     console.log(cookies)
+    // }).catch((error) => {
+    //     console.log(error)
+    // })
+
+    // Query all cookies associated with a specific url.
+    session.defaultSession.cookies.get({ url: 'http://localhost/' })
+    .then((cookies) => {
+        console.log(cookies)
+    }).catch((error) => {
+        console.log(error)
+    })
+
+    let cookie = {
+        url: 'http://localhost/',
+        name: 'fontSize',
+        value: '14pt'
+    };
+    // session.defaultSession.cookies.set(cookie)
+    //     .then(()=>{
+    //         console.log('set cookie');
+    //     }, (error)=>{
+    //         console.error(error);
+    //     })
+
+    session.defaultSession.cookies.remove('http://localhost/', 'fontSize');
+</script>
