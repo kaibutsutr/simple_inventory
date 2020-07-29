@@ -12,7 +12,7 @@ const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 $(document).ready(()=>{
 
     // Load side menu
-    commonModule.loadSideMenu('index', (err, html)=>{
+    commonModule.loadSideMenu('index.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
 

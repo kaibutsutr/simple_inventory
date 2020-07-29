@@ -7,7 +7,7 @@ const inventoryModule = require('../../src/modules/inventoryModule.js');
 $(document).ready(()=>{
 
     // Load side menu
-    commonModule.loadSideMenu('items', (err, html)=>{
+    commonModule.loadSideMenu('items.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
 
@@ -20,7 +20,7 @@ $(document).ready(()=>{
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<div class="container text-left">
+            let resultHTML = `<div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newItem()">
                                     <i class="fas fa-plus-circle"></i> New Item
                                 </button>

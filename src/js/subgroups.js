@@ -8,7 +8,7 @@ const inventoryModule = require('../../src/modules/inventoryModule.js');
 $(document).ready(()=>{
 
     // Load side menu
-    commonModule.loadSideMenu('subgroups', (err, html)=>{
+    commonModule.loadSideMenu('subgroups.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
 
@@ -30,7 +30,7 @@ $(document).ready(()=>{
                     groupsArray[groups[i].id] = groups[i].name;
             }
 
-            let resultHTML = `<div class="container text-left">
+            let resultHTML = `<div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newSubgroup()">
                                     <i class="fas fa-plus-circle"></i> New Subgroup
                                 </button>

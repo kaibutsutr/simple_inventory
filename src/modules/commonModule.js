@@ -1,37 +1,64 @@
 exports.loadSideMenu = function(currentPage, callback) {
+    
+    let mainPage = '';
+    switch(currentPage) {
+        case 'index.html':
+        case 'inventoryTransactions.html':
+            mainPage = 'inventory';
+            break;
+        case 'groups.html':
+        case 'subgroups.html':
+        case 'items.html':
+        case 'uom.html':
+            mainPage = 'inventoryMaster';
+            break;
+        case 'savedValuations.html':
+        case 'newValuation.html':
+            mainPage = 'valuations';
+            break;
+        case 'users.html':
+        case 'usergroups.html':
+            mainPage = 'users';
+            break;
+        case 'myAccount.html':
+        case 'logout.html':
+            mainPage = 'myAccount';
+            break;
+    }
+    
     let resultHTML = `<ul class="list-unstyled components">
                         <li>
                             <a href="#inventoryMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                Inventory
+                                <i class="fa fa-university"></i> Inventory
                             </a>
-                            <ul class="collapse list-unstyled" id="inventoryMenu">
-                                <li class="active">
+                            <ul class="collapse `+((mainPage=='inventory') ? `show` : ``)+` list-unstyled" id="inventoryMenu">
+                                <li `+((currentPage=='index.html') ? `class="active"` : ``)+`>
                                     <a href="index.html">
-                                        <i class="fas fa-university"></i>
+                                        <i class="fa fa-university"></i>
                                         Current Inventory
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="inventoryTransactions.html">Inventory Transactions</a>
+                                <li `+((currentPage=='inventoryTransactions.html') ? `class="active"` : ``)+`>
+                                    <a href="inventoryTransactions.html"><i class="fa fa-arrows-h"></i> Inventory Transactions</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
                             <a href="#masterMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                Inventory Master
+                                <i class="fa fa-cogs"></i> Inventory Master
                             </a>
-                            <ul class="collapse list-unstyled" id="masterMenu">
-                                <li>
-                                    <a href="groups.html"><i class="fas fa-folder-open"></i> Groups</a>
+                            <ul class="collapse `+((mainPage=='inventoryMaster') ? `show` : ``)+` list-unstyled" id="masterMenu">
+                                <li `+((currentPage=='groups.html') ? `class="active"` : ``)+`>
+                                    <a href="groups.html"><i class="fa fa-folder-open"></i> Groups</a>
                                 </li>
-                                <li>
-                                    <a href="subgroups.html"><i class="fas fa-dot-circle-o"></i> Subgroups</a>
+                                <li `+((currentPage=='subgroups.html') ? `class="active"` : ``)+`>
+                                    <a href="subgroups.html"><i class="fa fa-dot-circle-o"></i> Subgroups</a>
                                 </li>
-                                <li>
-                                    <a href="items.html"><i class="fas fa-file-circle-thin"></i> Items</a>
+                                <li `+((currentPage=='items.html') ? `class="active"` : ``)+`>
+                                    <a href="items.html"><i class="fa fa-file"></i> Items</a>
                                 </li>
-                                <li>
-                                    <a href="uom.html">UOM</a>
+                                <li `+((currentPage=='uom.html') ? `class="active"` : ``)+`>
+                                    <a href="uom.html"><i class="fa fa-balance-scale"></i> UOM</a>
                                 </li>
                             </ul>
                         </li>

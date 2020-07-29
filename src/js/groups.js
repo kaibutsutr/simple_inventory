@@ -6,7 +6,7 @@ const inventoryModule = require('../../src/modules/inventoryModule.js');
 $(document).ready(()=>{
 
     // Load side menu
-    commonModule.loadSideMenu('groups', (err, html)=>{
+    commonModule.loadSideMenu('groups.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
 
@@ -15,7 +15,7 @@ $(document).ready(()=>{
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<div class="container text-left">
+            let resultHTML = `<div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newGroup()">
                                     <i class="fas fa-plus-circle"></i> New Group
                                 </button>
