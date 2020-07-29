@@ -9,12 +9,27 @@ const appPath = app.getAppPath();
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 
+let dbName = require('electron').remote.getGlobal('sharedObject').db;
+let username;
+commonModule.checkLoggedIn((err, user)=>{
+    if(err) {
+        ipcRenderer.send('redirect-window', 'login.html', []);
+    } else {
+        username = user;
+    }
+})
+
 $(document).ready(()=>{
 
     // Load side menu
     commonModule.loadSideMenu('index.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
+
+    // Load username & DB name & font-size
+    $('#usernameButtonSpan').html(username);
+    $('#dbButtonSpan').html(dbName);
+    commonModule.setFontSize();
 
     inventoryModule.getCurrentInventory(function(err, result) {
         if(err) {

@@ -9,6 +9,12 @@ var win;
 var dialogWindow;
 var paramsMain;
 
+global.sharedObject = {
+    sessionURL: 'http://localhost/',
+    db: 'skeleton.db',
+    fontSize: 12
+}
+
 app.on('ready', ()=>{
     win = new BrowserWindow({
         width: 1000,

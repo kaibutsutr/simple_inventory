@@ -189,3 +189,39 @@ exports.indianNumberFormat = function(num, roundoff) {
     let test = num.toLocaleString('en-IN', {maximumFractionDigits: roundoff, minimumFractionDigits:roundoff});
     return(test);
 }
+
+exports.checkLoggedIn = (callback) => {
+    let sessionURL = require('electron').remote.getGlobal('sharedObject').sessionURL;
+    require('electron').remote.session.defaultSession.cookies.get({url:sessionURL})
+    .then((cookies)=>{
+        if(Object.keys(cookies).length > 0) {
+            // Iterate through cookies to search for username
+            for(let i in cookies) {
+                if(cookies[i].name=='username') {
+                    callback('', cookies[i].value);
+                }
+            }
+        }
+    }).catch((err)=>{
+        console.error(err);
+    })
+}
+
+exports.increaseFontSize = ()=>{
+    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    currentSize += 2;
+    require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
+    $(document.body).css('fontSize', currentSize+'px');
+}
+
+exports.decreaseFontSize = ()=>{
+    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    currentSize -= 2;
+    require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
+    $(document.body).css('fontSize', currentSize+'px');
+}
+
+exports.setFontSize = ()=>{
+    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    $(document.body).css('fontSize', currentSize+'px');
+}
