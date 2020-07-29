@@ -7,6 +7,7 @@ const commonModule = require(__dirname+'/src/modules/commonModule.js');
 
 var win;
 var dialogWindow;
+var paramsMain;
 
 app.on('ready', ()=>{
     win = new BrowserWindow({
@@ -42,7 +43,12 @@ app.on('activate', ()=>{
 });
 
 ipcMain.on('redirect-window', (event, fileName, params)=>{
+    paramsMain = params;
     win.loadURL(`file://${__dirname}/src/html/${fileName}`);
+});
+
+ipcMain.on('variable-request', function (event, arg) {
+    event.sender.send('variable-reply', paramsMain);
 });
 
 ipcMain.on('open-new-window', (event, fileName, params, width, height) => {

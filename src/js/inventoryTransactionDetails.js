@@ -7,16 +7,15 @@ const appPath = app.getAppPath();
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 
+var itemID;
+
 $(document).ready(()=>{
 
-    let additionalArgs = window.process.argv;
-    for(let needle of additionalArgs) {
-        if(needle.search('id=')===0) {
-            let temp = needle.split('=');
-            itemID = temp[1];
-        }
-    }
-    alert(itemID);
+    ipcRenderer.send('variable-request');
+
+    ipcRenderer.on('variable-reply', function (event, args) {
+        console.log(args);
+    });
 
     // Load side menu
     commonModule.loadSideMenu('index', (err, html)=>{
