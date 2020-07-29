@@ -30,9 +30,10 @@ $(document).ready(()=>{
                     groupsArray[groups[i].id] = groups[i].name;
             }
 
-            let resultHTML = `<div class="text-left">
+            let resultHTML = `<h4><i class="fa fa-dot-circle-o"></i> Subgroups</h4>
+                            <div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newSubgroup()">
-                                    <i class="fas fa-plus-circle"></i> New Subgroup
+                                    <i class="fa fa-plus-circle"></i> New Subgroup
                                 </button>
                             </div>
                             <br />

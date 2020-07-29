@@ -20,9 +20,10 @@ $(document).ready(()=>{
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<div class="text-left">
+            let resultHTML = `<h4><i class="fa fa-file"></i> Items</h4>
+                            <div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newItem()">
-                                    <i class="fas fa-plus-circle"></i> New Item
+                                    <i class="fa fa-plus-circle"></i> New Item
                                 </button>
                             </div>
                             <br />

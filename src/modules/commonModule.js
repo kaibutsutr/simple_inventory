@@ -64,40 +64,40 @@ exports.loadSideMenu = function(currentPage, callback) {
                         </li>
                         <li>
                             <a href="#valuationsMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                Valuations
+                                <i class="fa fa-usd"></i> Valuations
                             </a>
                             <ul class="collapse list-unstyled" id="valuationsMenu">
                                 <li>
-                                    <a href="valuations.html">Saved Valuations</a>
+                                    <a href="valuations.html"><i class="fa fa-usd"></i> Saved Valuations</a>
                                 </li>
                                 <li>
-                                    <a href="newValuations.html">New Valuation</a>
+                                    <a href="newValuations.html"><i class="fa fa-viacoin"></i> New Valuation</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
                             <a href="#usersMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                Users
+                                <i class="fa fa-user"></i> Users
                             </a>
                             <ul class="collapse list-unstyled" id="usersMenu">
                                 <li>
-                                    <a href="users.html">Users</a>
+                                    <a href="users.html"><i class="fa fa-user"></i> Users</a>
                                 </li>
                                 <li>
-                                    <a href="userGroups.html">Usergroups</a>
+                                    <a href="userGroups.html"><i class="fa fa-users"></i> Usergroups</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
                             <a href="#accountMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                My Account
+                                <i class="fa fa-universal-access"></i> My Account
                             </a>
                             <ul class="collapse list-unstyled" id="accountMenu">
                                 <li>
-                                    <a href="myAccount.html">My Account</a>
+                                    <a href="myAccount.html"><i class="fa fa-universal-access"></i> My Account</a>
                                 </li>
                                 <li>
-                                    <a href="logout.html">Logout</a>
+                                    <a href="logout.html"><i class="fa fa-power-off"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>

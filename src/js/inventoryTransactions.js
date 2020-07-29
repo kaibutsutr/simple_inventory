@@ -27,7 +27,8 @@ $(document).ready(()=>{
                 uomArray[uoms[i].id] = uoms[i];
             }
 
-            let resultHTML = `<table class="table table-sm table-light table-hover">
+            let resultHTML = `<h4><i class="fa fa-arrows-h"></i> Inventory Transactions</h4>
+                                <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
                                         <th>Group</th>

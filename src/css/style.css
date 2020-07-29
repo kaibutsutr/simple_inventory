@@ -151,3 +151,17 @@ tr.selectedRow td {
 .bg-dark a {
     color: #fff;
 }
+
+#contentDiv {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.breadcrumb-item a {
+    color: #47748b;
+    font-weight: bold;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}

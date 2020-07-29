@@ -15,9 +15,10 @@ $(document).ready(()=>{
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<div class="text-left">
+            let resultHTML = `<h4><i class="fa fa-folder-open"></i> Groups</h4>
+                            <div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newGroup()">
-                                    <i class="fas fa-plus-circle"></i> New Group
+                                    <i class="fa fa-plus-circle"></i> New Group
                                 </button>
                             </div>
                             <br />

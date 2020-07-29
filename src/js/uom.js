@@ -16,9 +16,10 @@ $(document).ready(()=>{
             $('#contentDiv').html('Error fetching data!');
             console.log(err);
         } else {
-            let resultHTML = `<div class="text-left">
+            let resultHTML = `<h4><i class="fa fa-balance-scale"></i> UOM</h4>
+                            <div class="text-left">
                                 <button class="btn btn-outline-secondary" onclick="newUOM()">
-                                    <i class="fas fa-plus-circle"></i> New UOM
+                                    <i class="fa fa-plus-circle"></i> New UOM
                                 </button>
                             </div>
                             <br />
@@ -51,7 +52,11 @@ $(document).ready(()=>{
                     </table>`;
             $('#contentDiv').html(resultHTML);
         }
-    })
+    });
+
+    $('#sidebarCollapse').on('click', function () {
+        $('#sidebar').toggleClass('active');
+    });
 });
 
 $(document).on("click","tr.uomRow", function(e){
