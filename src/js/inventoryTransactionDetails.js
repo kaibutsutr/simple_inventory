@@ -3,25 +3,31 @@ const ipcRenderer = require('electron').ipcRenderer;
 const app = remote.app;
 const myPath = app.getPath('userData');
 const appPath = app.getAppPath();
+const moment = require('moment');
 
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 
 var itemID;
-var date = new Date();
+var month;
 
 $(document).ready(()=>{
 
     ipcRenderer.send('variable-request');
 
     ipcRenderer.on('variable-reply', function (event, args) {
-        itemID = args[0];
-        let temp = args[0].split('=');
-        itemID = temp[1];
 
-        let fromDate = commonModule.getDateTimestamp('firstDayOfThisMonth');
-        let toDate = commonModule.getDateTimestamp('endOfToday');
-        inventoryModule.getItemTransactionDetails(itemID, fromDate.getTime(), toDate.getTime(), (err, result)=>{
+        itemID = args[0];
+        if(args[1])
+            month = moment(args[1]);
+        else
+            month = moment().startOf('month');
+
+        let fromDate = month.clone();
+        let toDate = moment(month.clone()).endOf('month');
+        console.log('Displaying details from '+fromDate.toLocaleString()+' to '+toDate.toLocaleString());
+
+        inventoryModule.getItemTransactionDetails(itemID, fromDate.unix(), toDate.unix(), (err, result)=>{
             if(err) {
                 console.error(err);
                 $('#contentDiv').html('Error loading data!');
@@ -31,12 +37,18 @@ $(document).ready(()=>{
                     openingStock = 0;
                 let transactions = result[1];
                 let uom = result[2][0];
-                let resultHTML = `<h4>${uom.itemName}</h4>
-                                    Subgroup: 
-                                    <br />
-                                    Group: 
-                                    <br />
 
+                let monthsOptions = commonModule.getMonthsDropdownOptions(month);
+
+                let resultHTML = `<h4>${uom.itemName}</h4>
+                                    <div id="itemGroupDetails"></div>
+                                    <div style="width:100%;padding:20px;" class="text-center">
+                                        <button class="btn btn-outline-success" id="backButton"><</button>
+                                            <select class="form-control" style="width:200px;display:inline-block;" id="month">
+                                                ${monthsOptions}
+                                            </select>
+                                        <button class="btn btn-outline-success" id="forwardButton">></button>
+                                    </div>
                                 <table class="table table-sm table-light table-bordered table-hover">
                                     <thead>
                                         <tr class="text-center">
@@ -59,7 +71,7 @@ $(document).ready(()=>{
                                             <td></td>
                                             <td></td>
                                         </tr>`;
-                let receipts, issues, closingStock = [0,0,openingStock];
+                let [receipts, issues, closingStock] = [0,0, openingStock];
                 for(let key in transactions) {
                     if(transactions[key].receipts > 0) {
                         receipts = transactions[key].receipts;
@@ -69,13 +81,21 @@ $(document).ready(()=>{
                         issues = transactions[key].receipts * -1;
                     }
                     closingStock = openingStock+receipts-issues;
+                    let tempValue = '';
+                    if(transactions[key].unitValue) {
+                        tempValue += `<br /><span class="smallFont">@ ${commonModule.currencyFormat(transactions[key].unitValue)}</span>`;
+                    }
+                    let comments = '';
+                    if(transactions[key].comments) {
+                        comments = commonModule.fold(transactions[key].comments, 30).join('<br />');
+                    }
                     resultHTML += `<tr class="clickable transactionRow" id="row_${transactions[key].id}">
-                                        <td class="text-center">${commonModule.normalDateFormat(transactions[key].datetime)}</td>
+                                        <td class="text-center">${moment.unix(transactions[key].datetime).format('DD MMM, YYYY')}</td>
                                         <td></td>
-                                        <td class="text-right">${(receipts ? commonModule.uomFormat(receipts, uom) : '')}</td>
+                                        <td class="text-right">${(receipts ? commonModule.uomFormat(receipts, uom) : '')}${tempValue}</td>
                                         <td class="text-right">${(issues ? commonModule.uomFormat(issues, uom) : '')}</td>
                                         <td class="text-right">${commonModule.uomFormat(closingStock, uom)}</td>
-                                        <td class="text-center smallFont">${commonModule.fold(transactions[key].comments, 30).join('<br />')}</td>
+                                        <td class="text-center smallFont">${comments}</td>
                                         <td class="text-center smallFont">${transactions[key].username}</td>
                                     </tr>`;
                 }
@@ -91,6 +111,41 @@ $(document).ready(()=>{
                                 </tbody>
                             </table>`;
                 $('#contentDiv').html(resultHTML);
+
+                // Month selector
+                $('#month').on('change', (e)=>{
+                    let tempMonth = $('#month').val();
+                    ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [itemID, tempMonth]);
+                })
+
+                $('#backButton').on('click', (e)=>{
+                    month.subtract(1, 'month');
+                    ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [itemID, month.format('YYYY-MM-DD')]);
+                })
+                
+                $('#forwardButton').on('click', (e)=>{
+                    let currentMonth = moment().startOf('month');
+                    let newMonth = month.clone();
+                    newMonth.add(1, 'month');
+                    // If month greater than current month, do nothing
+                    if(newMonth.diff(currentMonth)>0)
+                        return false;
+                    else
+                        ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [itemID, newMonth.format('YYYY-MM-DD')]);
+                })
+
+                // Load itemGroupDetails
+                inventoryModule.getSubgroup(uom.subgroupID, (err, result)=>{
+                    if(err) {
+                        $('#itemGroupDetails').html('Error loading data!');
+                    } else {
+                        let tempHTML = `Subgroup: <b>${result[0].name}</b>
+                                        <br />Group: <b>${result[0].groupName}</b>
+                                        <br />UOM: <b>${uom.name}</b>
+                                        <br />`;
+                        $('#itemGroupDetails').html(tempHTML);
+                    }
+                })
             }
         });
     });

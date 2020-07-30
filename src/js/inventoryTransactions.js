@@ -86,5 +86,5 @@ window.onerror = function(error, url, line) {
 
 $(document).on("click","tr.itemRow", function(e){
     let itemID = commonModule.getRowID(e);
-    ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [`id=${itemID}`]);
+    ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [`${itemID}`]);
 });

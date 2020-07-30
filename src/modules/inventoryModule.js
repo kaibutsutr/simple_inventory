@@ -360,7 +360,7 @@ exports.getItemTransactionDetails = (itemID, fromDate, toDate, callback) => {
     });
 
     uomQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT uom.*, items.name AS itemName FROM UOM INNER JOIN items WHERE items.id = '${itemID}' AND items.uomID = uom.id`, (err, result) => {
+        dbModule.selectQuery(`SELECT uom.*, items.subgroupID, items.name AS itemName FROM UOM INNER JOIN items WHERE items.id = '${itemID}' AND items.uomID = uom.id`, (err, result) => {
             if(err) {
                 reject(err);
             } else {

@@ -11,6 +11,7 @@
   "dependencies": {
     "electron": "^8.4.1",
     "md5": "^2.2.1",
+    "moment": "^2.27.0",
     "sqlite3": "^5.0.0"
   }
 }

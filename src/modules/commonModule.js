@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 exports.loadSideMenu = function(currentPage, callback) {
     
     let mainPage = '';
@@ -226,39 +228,10 @@ exports.setFontSize = ()=>{
     $(document.body).css('fontSize', currentSize+'px');
 }
 
-exports.getDateTimestamp = (description)=>{
-    let date,d,m,y;
-    switch(description) {
-        case 'firstDayOfThisMonth':
-            date = new Date();
-            d = 01;
-            m = date.getMonth()+1;
-            y = date.getFullYear();
-            let newDate = new Date(`${m}-${d}-${y}`);
-            return newDate;
-            break;
-
-        case 'endOfToday':
-            date = new Date();
-            d = date.getDate()+1;
-            m = date.getMonth()+1;
-            y = date.getFullYear();
-            let tomorrow = new Date(`${m}-${d}-${y}`);
-            return new Date(tomorrow.getTime()-1);
-    }
-}
-
-exports.normalDateFormat = (timestamp) => {
-    let date = new Date(timestamp);
-    let d,m,y;
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    d = date.getDate();
-    m = months[date.getMonth()];
-    y = date.getFullYear();
-    return `${d} ${m}, ${y}`;
-}
-
 exports.fold = (input, lineSize, lineArray) => {
+    if(!input)
+        return '';
+
     lineArray = lineArray || [];
     if (input.length <= lineSize) {
         lineArray.push(input);
@@ -267,4 +240,27 @@ exports.fold = (input, lineSize, lineArray) => {
     lineArray.push(input.substring(0, lineSize));
     var tail = input.substring(lineSize);
     return commonModule.fold(tail, lineSize, lineArray);
+}
+
+exports.currencyFormat = (value)=>{
+    return `Rs. ${value}`;
+}
+
+exports.getMonthsDropdownOptions = (currentMonth)=>{
+    // backwards: Currentmonth - 2 years 
+    // forwards: currentMonth to present month
+    let backYears = 2;
+    let current = currentMonth.clone();
+    current.subtract(backYears, 'years');
+    let end = moment().startOf('month');
+    let result = '';
+
+    let selected;
+    while(current.add(1, 'month').diff(end) <= 0) {
+        selected = '';
+        if(currentMonth.diff(current)==0)
+            selected = ' selected="selected"';
+        result += `<option value="${current.format('YYYY-MM-DD')}" ${selected}>${current.format('MMM YYYY')}</option>`;
+    }
+    return result;
 }
