@@ -336,3 +336,44 @@ exports.editUOM = (uomID, data, callback) => {
         callback(err, result);
     });
 }
+
+exports.getItemTransactionDetails = (itemID, fromDate, toDate, callback) => {
+
+    openingStockQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT itemID, SUM(receipts) AS openingStock FROM entries WHERE itemID = '${itemID}' AND datetime < '${fromDate}'`, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+
+    transactionsQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT * FROM entries WHERE itemID = '${itemID}' AND datetime >= '${fromDate}' AND datetime <= '${toDate}'`, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+
+    uomQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT uom.*, items.name AS itemName FROM UOM INNER JOIN items WHERE items.id = '${itemID}' AND items.uomID = uom.id`, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+
+    Promise.all([openingStockQuery, transactionsQuery, uomQuery])
+            .then((results)=>{
+                callback('', results);
+            })
+            .catch((err)=>{
+                callback(err);
+            });
+}

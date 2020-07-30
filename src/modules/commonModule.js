@@ -225,3 +225,30 @@ exports.setFontSize = ()=>{
     let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
     $(document.body).css('fontSize', currentSize+'px');
 }
+
+exports.getDateTimestamp = (description)=>{
+    let date,d,m,y;
+    switch(description) {
+        case 'firstDayOfThisMonth':
+            date = new Date();
+            d = 01;
+            m = date.getMonth()+1;
+            y = date.getFullYear();
+            let newDate = new Date(`${m}-${d}-${y}`);
+            return newDate;
+            break;
+
+        case 'endOfToday':
+            date = new Date();
+            d = date.getDate()+1;
+            m = date.getMonth()+1;
+            y = date.getFullYear();
+            let tomorrow = new Date(`${m}-${d}-${y}`);
+            return new Date(tomorrow.getTime()-1);
+    }
+}
+
+exports.normalDateFormat = (timestamp) => {
+    let date = new Date(timestamp);
+    return date.toLocaleString();
+}
