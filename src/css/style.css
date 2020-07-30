@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    font-size: 9pt;
+    font-size: 10pt;
 }
 
 h4 {
@@ -175,4 +175,8 @@ tr.selectedRow td {
     min-height: 100vh; /* These two lines are counted as one :-)       */
     display: flex;
     align-items: center;
+}
+
+.smallFont {
+    font-size: 8pt;
 }

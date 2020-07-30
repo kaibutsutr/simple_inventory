@@ -26,13 +26,18 @@ $(document).ready(()=>{
                 console.error(err);
                 $('#contentDiv').html('Error loading data!');
             } else {
-                console.log(result);
                 let openingStock = result[0][0].openingStock;
                 if(!openingStock)
                     openingStock = 0;
                 let transactions = result[1];
                 let uom = result[2][0];
-                let resultHTML = `<table class="table table-sm table-light table-bordered">
+                let resultHTML = `<h4>${uom.itemName}</h4>
+                                    Subgroup: 
+                                    <br />
+                                    Group: 
+                                    <br />
+
+                                <table class="table table-sm table-light table-bordered table-hover">
                                     <thead>
                                         <tr class="text-center">
                                             <th>Date</th>
@@ -40,12 +45,16 @@ $(document).ready(()=>{
                                             <th>Receipts</th>
                                             <th>Issues</th>
                                             <th>Closing Stock</th>
+                                            <th>Comments</th>
+                                            <th>Username</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td></td>
                                             <td class="text-right"><b>${commonModule.uomFormat(openingStock, uom)}</b></td>
+                                            <td></td>
+                                            <td></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>
@@ -60,15 +69,26 @@ $(document).ready(()=>{
                         issues = transactions[key].receipts * -1;
                     }
                     closingStock = openingStock+receipts-issues;
-                    resultHTML += `<tr>
-                                        <td>${commonModule.normalDateFormat(transactions[key].datetime)}</td>
+                    resultHTML += `<tr class="clickable transactionRow" id="row_${transactions[key].id}">
+                                        <td class="text-center">${commonModule.normalDateFormat(transactions[key].datetime)}</td>
                                         <td></td>
                                         <td class="text-right">${(receipts ? commonModule.uomFormat(receipts, uom) : '')}</td>
                                         <td class="text-right">${(issues ? commonModule.uomFormat(issues, uom) : '')}</td>
                                         <td class="text-right">${commonModule.uomFormat(closingStock, uom)}</td>
+                                        <td class="text-center smallFont">${commonModule.fold(transactions[key].comments, 30).join('<br />')}</td>
+                                        <td class="text-center smallFont">${transactions[key].username}</td>
                                     </tr>`;
                 }
-                resultHTML += `</tbody>
+                resultHTML += `<tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right"><b>${commonModule.uomFormat(closingStock, uom)}</b></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
                             </table>`;
                 $('#contentDiv').html(resultHTML);
             }

@@ -250,5 +250,21 @@ exports.getDateTimestamp = (description)=>{
 
 exports.normalDateFormat = (timestamp) => {
     let date = new Date(timestamp);
-    return date.toLocaleString();
+    let d,m,y;
+    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    d = date.getDate();
+    m = months[date.getMonth()];
+    y = date.getFullYear();
+    return `${d} ${m}, ${y}`;
+}
+
+exports.fold = (input, lineSize, lineArray) => {
+    lineArray = lineArray || [];
+    if (input.length <= lineSize) {
+        lineArray.push(input);
+        return lineArray;
+    }
+    lineArray.push(input.substring(0, lineSize));
+    var tail = input.substring(lineSize);
+    return commonModule.fold(tail, lineSize, lineArray);
 }

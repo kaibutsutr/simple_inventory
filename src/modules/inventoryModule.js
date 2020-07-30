@@ -350,7 +350,7 @@ exports.getItemTransactionDetails = (itemID, fromDate, toDate, callback) => {
     });
 
     transactionsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT * FROM entries WHERE itemID = '${itemID}' AND datetime >= '${fromDate}' AND datetime <= '${toDate}'`, (err, result) => {
+        dbModule.selectQuery(`SELECT * FROM entries WHERE itemID = '${itemID}' AND datetime >= '${fromDate}' AND datetime <= '${toDate}' ORDER BY datetime ASC`, (err, result) => {
             if(err) {
                 reject(err);
             } else {
