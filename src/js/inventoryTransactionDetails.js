@@ -42,6 +42,14 @@ $(document).ready(()=>{
 
                 let resultHTML = `<h4>${uom.itemName}</h4>
                                     <div id="itemGroupDetails"></div>
+                                    <div style="padding-top:10px">
+                                        <button class="btn btn-outline-secondary" id="receiptButton">
+                                            <i class="fa fa-plus-circle"></i> Receipt
+                                        </button>
+                                        <button class="btn btn-outline-secondary" id="issueButton">
+                                            <i class="fa fa-minus-circle"></i> Issue
+                                        </button>
+                                    </div>
                                     <div style="width:100%;padding:20px;" class="text-center">
                                         <button class="btn btn-outline-success" id="backButton"><</button>
                                             <select class="form-control" style="width:200px;display:inline-block;" id="month">
@@ -132,6 +140,11 @@ $(document).ready(()=>{
                         return false;
                     else
                         ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [itemID, newMonth.format('YYYY-MM-DD')]);
+                })
+
+                // Receipt button
+                $('#receiptButton').on('click', (e)=>{
+                    ipcRenderer.send('open-new-window', 'inventoryTransactionDialogNew.html', ['id='+itemID,'receipt='+true, 'itemName='+uom.itemName, 'month='+month.format('YYYY-MM-DD')]);
                 })
 
                 // Load itemGroupDetails
