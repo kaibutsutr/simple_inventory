@@ -6,8 +6,18 @@ const appPath = app.getAppPath();
 
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
+const moment = require('moment');
 
 var itemID, receipt, itemName, month;
+
+let username;
+commonModule.checkLoggedIn((err, user)=>{
+    if(err) {
+        ipcRenderer.send('redirect-window', 'login.html', []);
+    } else {
+        username = user;
+    }
+})
 
 $(document).ready(()=>{
 
@@ -21,6 +31,10 @@ $(document).ready(()=>{
         if(needle.search('receipt=')===0) {
             let temp = needle.split('=');
             receipt = temp[1];
+            if(receipt=='true')
+                receipt = true;
+            else
+                receipt = false;
         }
 
         if(needle.search('itemName=')===0) {
@@ -44,7 +58,7 @@ $(document).ready(()=>{
                                 Item
                             </div>
                             <div class="col-md-9 col-lg-9">
-                                ${itemName}
+                                <b>${itemName}</b>
                             </div>
                         </div>
                         <div class="form-group row" style="width:100%;">
@@ -57,12 +71,13 @@ $(document).ready(()=>{
                         </div>
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                <label class="col-form-label">Receipt Qty</label>
+                                <label class="col-form-label">`+(receipt ? 'Receipt' : 'Issue')+` Qty</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
-                                <input type="text" id="receipt" class="form-control" />
+                                <input type="text" id="receipts" class="form-control" />
                             </div>
                         </div>
+                        `+(receipt ? `
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
                                 <label class="col-form-label">Unit Price</label>
@@ -70,7 +85,7 @@ $(document).ready(()=>{
                             <div class="col-md-9 col-lg-9">
                                 <input type="text" id="unitValue" class="form-control" />
                             </div>
-                        </div>
+                        </div>` : ``)+`
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
                                 <label class="col-form-label">Comments</label>
@@ -84,21 +99,57 @@ $(document).ready(()=>{
                                 <label class="col-form-label">Username</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
-                                <input type="text" id="receipt" class="form-control" readonly value="jacob" />
+                                <input type="text" id="username" class="form-control" readonly value="${username}" />
                             </div>
                         </div>
                         <div class="container text-center" style="width:100%">
-                            <button class="btn btn-secondary" id="editGroup" onclick="createGroup()">Save</button>
+                            <button class="btn btn-secondary" id="editGroup" onclick="newTransaction(${itemID})">Save</button>
                             <button class="btn btn-secondary" id="cancel" onclick="cancelDialog()">Cancel</button>
                         </div>`;
     $('#contentDiv').html(resultHTML);
     $('#date').datetimepicker({
-        timepicker: false,
-        format: 'd-m-Y'
+        timepicker: true,
+        format: 'd-m-Y H:i'
     });
 });
 
 function cancelDialog() {
     remote.getCurrentWindow()
         .close();
+}
+
+function newTransaction(itemID) {
+    let date = commonModule.getValidValue('date');
+    let receipts = commonModule.getValidValue('receipts');
+    let comments = $('#comments').val();
+    date = moment(date, "DD-MM-YYYY kk:mm");
+    if(!date || !receipts)
+        return false;
+
+    let unitValue = 0;
+    if(receipt) {
+        unitValue = commonModule.getValidValue('unitValue');
+        if(!unitValue)
+            return false;
+    } else {
+        receipts = receipts * -1;
+    }
+
+    let data = {
+        itemID: itemID,
+        datetime: date.unix(),
+        receipts,
+        unitValue,
+        comments,
+        username
+    };
+    console.log(data);
+    inventoryModule.newTransaction(data, (err, result)=>{
+        if(err) {
+            $('#contentDiv').html('Could not save data!');
+            console.log(err);
+        } else {
+            $('#contentDiv').html('Success!');
+        }
+    })
 }

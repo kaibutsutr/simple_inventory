@@ -88,7 +88,7 @@ $(document).ready(()=>{
                         receipts = 0;
                         issues = transactions[key].receipts * -1;
                     }
-                    closingStock = openingStock+receipts-issues;
+                    closingStock = closingStock+receipts-issues;
                     let tempValue = '';
                     if(transactions[key].unitValue) {
                         tempValue += `<br /><span class="smallFont">@ ${commonModule.currencyFormat(transactions[key].unitValue)}</span>`;
@@ -103,7 +103,7 @@ $(document).ready(()=>{
                                         <td class="text-right">${(receipts ? commonModule.uomFormat(receipts, uom) : '')}${tempValue}</td>
                                         <td class="text-right">${(issues ? commonModule.uomFormat(issues, uom) : '')}</td>
                                         <td class="text-right">${commonModule.uomFormat(closingStock, uom)}</td>
-                                        <td class="text-center smallFont">${comments}</td>
+                                        <td class="text-left smallFont">${comments}</td>
                                         <td class="text-center smallFont">${transactions[key].username}</td>
                                     </tr>`;
                 }
@@ -147,6 +147,11 @@ $(document).ready(()=>{
                     ipcRenderer.send('open-new-window', 'inventoryTransactionDialogNew.html', ['id='+itemID,'receipt='+true, 'itemName='+uom.itemName, 'month='+month.format('YYYY-MM-DD')]);
                 })
 
+                // Issue button
+                $('#issueButton').on('click', (e)=>{
+                    ipcRenderer.send('open-new-window', 'inventoryTransactionDialogNew.html', ['id='+itemID,'receipt='+false, 'itemName='+uom.itemName, 'month='+month.format('YYYY-MM-DD')]);
+                })
+
                 // Load itemGroupDetails
                 inventoryModule.getSubgroup(uom.subgroupID, (err, result)=>{
                     if(err) {
@@ -154,7 +159,6 @@ $(document).ready(()=>{
                     } else {
                         let tempHTML = `Subgroup: <b>${result[0].name}</b>
                                         <br />Group: <b>${result[0].groupName}</b>
-                                        <br />UOM: <b>${uom.name}</b>
                                         <br />`;
                         $('#itemGroupDetails').html(tempHTML);
                     }

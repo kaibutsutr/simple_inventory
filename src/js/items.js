@@ -33,6 +33,7 @@ $(document).ready(()=>{
                                         <th>Group</th>
                                         <th>Subgroup</th>
                                         <th>Item</th>
+                                        <th>UOM</th>
                                     </tr>
                                 </thead>
                                 <tbody>`;
@@ -47,6 +48,7 @@ $(document).ready(()=>{
                                                     <td>${groups[groupKey].name}</td>
                                                     <td>${subgroups[subgroupKey].name}</td>
                                                     <td><b>${items[itemKey].name}</b></td>
+                                                    <td>${items[itemKey].uomName}</td>
                                                 </tr>`;
                             }
                         }

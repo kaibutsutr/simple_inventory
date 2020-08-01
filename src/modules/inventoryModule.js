@@ -229,7 +229,7 @@ exports.getItems = (callback) => {
     });
 
     itemsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM items', (err, rows) => {
+        dbModule.selectQuery('SELECT items.*, uom.name AS uomName FROM items INNER JOIN uom WHERE uom.id=items.uomID', (err, rows) => {
             if(err) {
                 reject(err);
             } else {
@@ -249,7 +249,7 @@ exports.getItems = (callback) => {
 }
 
 exports.getItem = (itemID, callback) => {
-    dbModule.selectQuery(`SELECT * FROM items WHERE id = ${itemID}`, (err, rows) => {
+    dbModule.selectQuery(`SELECT items.*, uom.name AS uomName, uom.prefix, uom.postfix, uom.roundoff FROM items INNER JOIN uom WHERE items.uomID=uom.id AND items.id = ${itemID}`, (err, rows) => {
         if(err) {
             callback(err);
         } else {
@@ -370,6 +370,52 @@ exports.getItemTransactionDetails = (itemID, fromDate, toDate, callback) => {
     });
 
     Promise.all([openingStockQuery, transactionsQuery, uomQuery])
+            .then((results)=>{
+                callback('', results);
+            })
+            .catch((err)=>{
+                callback(err);
+            });
+}
+
+exports.newTransaction = (data, callback)=>{
+    dbModule.insert('entries', data, function(err, result) {
+        callback(err, result);
+    });
+}
+
+exports.getGroupsSubgroupsAndUOMs = (callback) => {
+    groupsQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery('SELECT * FROM groups', (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    subgroupsQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery('SELECT * FROM subgroups ORDER BY groupID ASC', (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    uomQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery('SELECT * FROM uom', (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    Promise.all([groupsQuery, subgroupsQuery, uomQuery])
             .then((results)=>{
                 callback('', results);
             })

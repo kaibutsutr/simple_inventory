@@ -53,6 +53,14 @@ $(document).ready(()=>{
                                         <b>${subgroupDetails[0].groupName}</b>
                                     </div>
                                 </div>
+                                <div class="form-group row" style="width:100%;">
+                                    <div class="col-md-6 col-lg-6 text-right">
+                                        UOM
+                                    </div>
+                                    <div class="col-md-6 col-lg-6">
+                                        <b>${itemDetails[0].uomName}</b>
+                                    </div>
+                                </div>
                                 <div class="container text-center" style="width:100%">
                                     <input type="hidden" name="groupID" id="groupID" value="${itemID}" />
                                     <button class="btn btn-secondary" id="editItem" onclick="editItem(${itemID})">Edit</button>

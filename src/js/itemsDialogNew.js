@@ -12,13 +12,12 @@ const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
 
 $(document).ready(()=>{
 
-    inventoryModule.getGroupsAndSubgroups((err, result)=>{
+    inventoryModule.getGroupsSubgroupsAndUOMs((err, result)=>{
         if(err) {
             $('#contentDiv').html('Error accessing database!');
         } else {
-            console.log(result);
-            let groups, subgroups;
-            [groups, subgroups] = result;
+            let groups, subgroups, uoms;
+            [groups, subgroups, uoms] = result;
             let groupsArray = [];
             for(let key in groups) {
                 groupsArray[groups[key].id] = groups[key].name;
@@ -28,6 +27,12 @@ $(document).ready(()=>{
             for(let key in subgroups) {
                 subgroupsDropdown += `<option value="${subgroups[key].id}">${subgroups[key].name} [${groupsArray[subgroups[key].groupID]}]</option>`;
             }
+
+            let uomsDropdown = '<option value="">Please select</option>';
+            for(let key in uoms) {
+                uomsDropdown += `<option value="${uoms[key].id}">${uoms[key].name}</option>`;
+            }
+
             let resultHTML = `<div class="form-group row text-center" style="width:100%;">
                                 <div class="text-center col-md-12 col-lg-12"><b>New Item</b></div>
                             </div>
@@ -49,8 +54,18 @@ $(document).ready(()=>{
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group row" style="width:100%;">
+                                <div class="col-md-3 col-lg-3 text-right">
+                                    <label class="col-form-label">UOM</label>
+                                </div>
+                                <div class="col-md-9 col-lg-9">
+                                    <select id="uomID" class="form-control">
+                                        ${uomsDropdown}
+                                    </select>
+                                </div>
+                            </div>
                             <div class="container text-center" style="width:100%">
-                                <button class="btn btn-secondary" id="editGroup" onclick="createItem()">Save</button>
+                                <button class="btn btn-secondary" onclick="createItem()">Save</button>
                                 <button class="btn btn-secondary" id="cancel" onclick="cancelDialog()">Cancel</button>
                             </div>`;
                     $('#contentDiv').html(resultHTML);
@@ -63,10 +78,11 @@ $(document).ready(()=>{
 function createItem() {
     let name = commonModule.getValidValue('itemName');
     let subgroupID = commonModule.getValidValue('subgroupID');
-    if(!name || !subgroupID)
+    let uomID = commonModule.getValidValue('uomID');
+    if(!name || !subgroupID || !uomID)
         return false;
 
-    let data = {name, subgroupID};
+    let data = {name, subgroupID, uomID};
     inventoryModule.createItem(data, (err, result=0)=>{
         if(err) {
             $('#contentDiv').html(err);
