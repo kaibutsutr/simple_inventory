@@ -423,3 +423,207 @@ exports.getGroupsSubgroupsAndUOMs = (callback) => {
                 callback(err);
             });
 }
+
+exports.getSavedValuations = (callback)=>{
+    dbModule.selectQuery('SELECT * FROM valuations ORDER BY date DESC', (err, rows) => {
+        if(err) {
+            callback(err);
+        } else {
+            callback('', rows);
+        }
+    });
+}
+
+exports.getValuationDetails = (valuationID, callback)=>{
+    dbModule.selectQuery(`SELECT * FROM valuations WHERE id = '${valuationID}'`, (err, rows) => {
+        if(err) {
+            callback(err);
+        } else {
+            callback('', rows);
+        }
+    });
+}
+
+exports.createValuation = (data, callback)=>{
+    dbModule.insert('valuations', data, function(err, result) {
+        if(err) {
+            callback(err);
+        } else {
+            // Get insert ID
+            dbModule.selectQuery(`SELECT id FROM valuations WHERE date = '${data.date}' AND comments = '${data.comments}'`, (err, rows) => {
+                if(err) {
+                    callback(err);
+                } else {
+                    callback('', rows[0].id);
+                }
+            });
+        }
+    });
+}
+
+exports.getValuation = (valuationID, callback)=>{
+    valuationQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT * FROM valuations WHERE id = '${valuationID}'`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    valuationItemsQuery = new Promise((resolve, reject) => {
+        dbModule.selectQuery(`SELECT * FROM valuationItems WHERE valuationID = '${valuationID}'`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+
+    itemsQuery = new Promise((resolve, reject)=>{
+        dbModule.selectQuery(`SELECT items.*, subgroups.name AS subgroupName, groups.name AS groupName 
+                                FROM items INNER JOIN subgroups, groups 
+                                WHERE items.subgroupID=subgroups.id AND subgroups.groupID=groups.id
+                                ORDER BY subgroupName ASC`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+
+        })
+    })
+
+    uomsQuery = new Promise((resolve, reject)=>{
+        dbModule.selectQuery(`SELECT * FROM uom`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+
+        })
+    })
+
+    Promise.all([valuationQuery, valuationItemsQuery, itemsQuery, uomsQuery])
+            .then((results)=>{
+                callback('', results);
+            })
+            .catch((err)=>{
+                console.error(err);
+                callback(err);
+            });
+}
+
+exports.getValuationItemWise = (openingDate, closingDate, callback)=>{
+    // Get opening stock
+    openingQuery = new Promise((resolve, reject)=>{
+        dbModule.selectQuery(`SELECT SUM(receipts) AS openingStock, itemID, unitValue FROM entries WHERE datetime < '${openingDate}' GROUP BY itemID`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+
+        })
+    })
+
+    // Get closing stock
+    closingQuery = new Promise((resolve, reject)=>{
+        dbModule.selectQuery(`SELECT SUM(receipts) AS closingStock, itemID FROM entries WHERE datetime < ${closingDate} GROUP BY itemID`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+
+        })
+    })
+
+    // Get receipts from openignDate(including) to closingDate(excluding)
+    receiptsQuery = new Promise((resolve, reject)=>{
+        dbModule.selectQuery(`SELECT receipts, datetime, unitValue, itemID 
+                                FROM entries 
+                                WHERE datetime > '${openingDate}' AND datetime < '${closingDate}' AND receipts>0 
+                                ORDER BY itemID`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+
+        })
+    })
+
+    // Get receipts from openignDate(including) to closingDate(excluding)
+    issuesQuery = new Promise((resolve, reject)=>{
+        dbModule.selectQuery(`SELECT SUM(receipts) AS totalIssues, itemID 
+                                FROM entries 
+                                WHERE datetime > '${openingDate}' AND datetime < '${closingDate}' AND receipts<0 
+                                GROUP BY itemID`, (err, rows) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        })
+    })
+
+    Promise.all([openingQuery, closingQuery, receiptsQuery, issuesQuery])
+        .then((results)=>{
+            callback('', results);
+        })
+        .catch((err)=>{
+            console.log(err);
+            callback(err);
+        });
+}
+
+exports.saveValuationItem = (valuationID, data, callback)=>{
+    dbModule.selectQuery(`SELECT * FROM valuationItems WHERE valuationID = '${valuationID}' AND itemID = '${data.itemID}'`, (err, rows)=>{
+        if(err) {
+            callback(err);
+        } else {
+            if(Object.keys(rows).length==0) {
+                // No such entry - go ahead and save
+                data.valuationID = valuationID;
+                dbModule.insert('valuationItems', data, (err, result)=>{
+                    if(err) {
+                        callback(err);
+                    } else {
+                        callback('', true);
+                    }
+                })
+            } else {
+                // Entry already exists - Update
+                dbModule.update('valuationItems', `valuationID = '${valuationID}' AND itemID = '${data.itemID}'`, data, (err, result)=>{
+                    if(err) {
+                        callback(err);
+                    } else {
+                        callback('', true);
+                    }
+                })
+            }
+        }
+    })
+}
+
+exports.deleteValuation = (valuationID, callback)=>{
+    dbModule.delete('valuationItems', `valuationID='${valuationID}'`, (err, result)=>{
+        if(err) {
+            console.log(err);
+            callback(err);
+        } else {
+            dbModule.delete('valuations', `id='${valuationID}'`, (err, result)=>{
+                if(err) {
+                    console.log(err);
+                    callback(err);
+                } else {
+                    callback('', true);
+                }
+            })
+        }
+    })
+}

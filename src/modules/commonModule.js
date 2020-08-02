@@ -14,8 +14,8 @@ exports.loadSideMenu = function(currentPage, callback) {
         case 'uom.html':
             mainPage = 'inventoryMaster';
             break;
-        case 'savedValuations.html':
-        case 'newValuation.html':
+        case 'valuations.html':
+        case 'valuationsNew.html':
             mainPage = 'valuations';
             break;
         case 'users.html':
@@ -68,12 +68,12 @@ exports.loadSideMenu = function(currentPage, callback) {
                             <a href="#valuationsMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <i class="fa fa-usd"></i> Valuations
                             </a>
-                            <ul class="collapse list-unstyled" id="valuationsMenu">
-                                <li>
+                            <ul class="collapse `+((mainPage=='valuations') ? `show` : ``)+` list-unstyled" id="valuationsMenu">
+                                <li `+((currentPage=='valuations.html') ? `class="active"` : ``)+`>
                                     <a href="valuations.html"><i class="fa fa-usd"></i> Saved Valuations</a>
                                 </li>
-                                <li>
-                                    <a href="newValuations.html"><i class="fa fa-viacoin"></i> New Valuation</a>
+                                <li `+((currentPage=='valuationsNew.html') ? `class="active"` : ``)+`>
+                                    <a href="valuationsNew.html"><i class="fa fa-viacoin"></i> New Valuation</a>
                                 </li>
                             </ul>
                         </li>
@@ -188,7 +188,7 @@ exports.uomFormat = function(qty, uom) {
 }
 
 exports.indianNumberFormat = function(num, roundoff) {
-    let test = num.toLocaleString('en-IN', {maximumFractionDigits: roundoff, minimumFractionDigits:roundoff});
+    let test = num.toLocaleString('en-IN', {maximumFractionDigits: roundoff, minimumFractionDigits: roundoff});
     return(test);
 }
 
@@ -263,4 +263,16 @@ exports.getMonthsDropdownOptions = (currentMonth)=>{
         result += `<option value="${current.format('YYYY-MM-DD')}" ${selected}>${current.format('MMM YYYY')}</option>`;
     }
     return result;
+}
+
+exports.currency = (num, noOfDecimals=2)=>{
+    noOfDecimals = noOfDecimals * 10;
+    amount = Math.round(num * noOfDecimals) / noOfDecimals;
+    amount = amount.toLocaleString('en-IN');
+    return ('Rs. '+amount);
+}
+
+exports.round = (num, noOfDecimals=2)=>{
+    noOfDecimals = noOfDecimals * 10;
+    return (Math.round(num * noOfDecimals) / noOfDecimals);
 }

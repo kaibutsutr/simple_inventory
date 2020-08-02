@@ -97,3 +97,30 @@ exports.insert = (tableName, data, callback) => {
         }
     });
 }
+
+
+
+exports.delete = (tableName, whereCondition, callback) => {
+
+    let db = new sqlite3.Database(dbName, sqlite3.OPEN_READWRITE, (err)=>{
+        if(err) {
+            callback(err, null);
+        }
+    });
+
+    db.run(`DELETE FROM ${tableName} WHERE ${whereCondition}`, [], (err, result) => {
+
+        if(err)
+            callback(err, null);
+        else
+            callback('', 'success');
+    });
+
+    // close the DB
+    db.close((err) => {
+        if (err) {
+            callback(err);
+        }
+    });
+
+}

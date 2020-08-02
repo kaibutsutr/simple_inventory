@@ -75,7 +75,7 @@ $(document).ready(()=>{
                                 let currentInventory = 0;
                                 if(inventory[items[itemKey].id])
                                     currentInventory = inventory[items[itemKey].id];
-                                resultHTML += `<tr> 
+                                resultHTML += `<tr class="clickable itemRow" id="row_${items[itemKey].id}"> 
                                                     <td></td>
                                                     <td></td>
                                                     <td><b>${items[itemKey].name}</b></td>
@@ -88,6 +88,11 @@ $(document).ready(()=>{
             }
             resultHTML += `</tbody></table>`;
             $('#contentDiv').html(resultHTML);
+
+            $(document).on("click","tr.itemRow", function(e){
+                let itemID = commonModule.getRowID(e);
+                ipcRenderer.send('redirect-window', 'inventoryTransactionDetails.html', [`${itemID}`]);
+            });
         }
     });
 
