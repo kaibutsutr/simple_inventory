@@ -1,4 +1,5 @@
 const moment = require('moment');
+const md5 = require('md5');
 
 exports.loadSideMenu = function(currentPage, callback) {
     
@@ -19,13 +20,14 @@ exports.loadSideMenu = function(currentPage, callback) {
             mainPage = 'valuations';
             break;
         case 'users.html':
-        case 'usergroups.html':
+        case 'usertypes.html':
             mainPage = 'users';
             break;
         case 'myAccount.html':
+        case 'createDB.html':
         case 'logout.html':
             mainPage = 'myAccount';
-            break;
+            break;  
     }
     
     let resultHTML = `<ul class="list-unstyled components">
@@ -81,24 +83,27 @@ exports.loadSideMenu = function(currentPage, callback) {
                             <a href="#usersMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <i class="fa fa-user"></i> Users
                             </a>
-                            <ul class="collapse list-unstyled" id="usersMenu">
-                                <li>
+                            <ul class="collapse `+((mainPage=='users') ? `show` : ``)+` list-unstyled" id="usersMenu">
+                                <li `+((currentPage=='users.html') ? `class="active"` : ``)+`>
                                     <a href="users.html"><i class="fa fa-user"></i> Users</a>
                                 </li>
-                                <li>
-                                    <a href="userGroups.html"><i class="fa fa-users"></i> Usergroups</a>
+                                <li `+((currentPage=='usertypes.html') ? `class="active"` : ``)+`>
+                                    <a href="usertypes.html"><i class="fa fa-users"></i> Usertypes</a>
                                 </li>
                             </ul>
                         </li>
                         <li>
                             <a href="#accountMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <i class="fa fa-universal-access"></i> My Account
+                                <i class="fa fa-universal-access"></i> My Settings
                             </a>
-                            <ul class="collapse list-unstyled" id="accountMenu">
-                                <li>
+                            <ul class="collapse `+((mainPage=='myAccount') ? `show` : ``)+` list-unstyled" id="accountMenu">
+                                <li `+((currentPage=='myAccount.html') ? `class="active"` : ``)+`>
                                     <a href="myAccount.html"><i class="fa fa-universal-access"></i> My Account</a>
                                 </li>
-                                <li>
+                                <li `+((currentPage=='createDB.html') ? `class="active"` : ``)+`>
+                                    <a href="createDB.html"><i class="fa fa-database"></i> Create DB</a>
+                                </li>
+                                <li `+((currentPage=='logout.html') ? `class="active"` : ``)+`>
                                     <a href="logout.html"><i class="fa fa-power-off"></i> Logout</a>
                                 </li>
                             </ul>
@@ -106,6 +111,11 @@ exports.loadSideMenu = function(currentPage, callback) {
                     </ul>`;
 
     callback(null, resultHTML);
+}
+
+exports.encryptPassword = function(password) {
+    require('md5');
+    return md5(password+'simple_inventory');
 }
 
 exports.saveToFile = function(data, filePath) {
@@ -275,4 +285,22 @@ exports.currency = (num, noOfDecimals=2)=>{
 exports.round = (num, noOfDecimals=2)=>{
     noOfDecimals = noOfDecimals * 10;
     return (Math.round(num * noOfDecimals) / noOfDecimals);
+}
+
+exports.getQuickMenu = (callback)=>{
+    let username = '';
+    commonModule.checkLoggedIn((err, result)=>{
+        if(!err)
+            username = result;
+
+        let resultHTML = '';
+        let db = require('electron').remote.getGlobal('sharedObject').db;
+        db = '...'+db.substr(db.length - 20);
+        resultHTML += `<div class="d-flex p-2">
+                            <div class="p-2 border">Logged in: <b>${username}</b></div>
+                            <div class="p-2 border">DB: <b>${db}</b></div>
+                            <div class="p-2 border"><i class="fa fa-power-off"></i> <a href="logout.html">Logout</a></div>
+                        </div>`;
+        callback('', resultHTML);
+    })
 }

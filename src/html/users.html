@@ -24,17 +24,26 @@
                 </div>
             </nav>
 
-            <div id="content">
+            <div id="content" style="width:100%">
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
-                        <button type="button" id="sidebarCollapse" class="btn btn-secondary">
-                            <i class="fa fa-align-left"></i>
-                            <span>Menu</span>
+                        <button type="button" id="sidebarCollapse" class="btn btn-outline-secondary">
+                            <i class="fa fa-bars"></i>
                         </button>
+                        <div class="text-right" id="quickMenuHolder">
+
+                        </div>
                     </div>
                 </nav>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="./index.html">Home</a></li>
+                        <li class="breadcrumb-item">Users</li>
+                        <li class="breadcrumb-item active" aria-current="page">Users</li>
+                    </ol>
+                </nav>
 
-                <div class="container-fluid" style="padding:20px; min-width:1000px;" id="usersDiv">
+                <div class="container-fluid" id="usersDiv">
 
                 </div>
             </div>
@@ -43,7 +52,7 @@
         <!-- Bootstrap and jQuery loading -->
         <script src="../lib/jquery-3.5.1/jquery-3.5.1.min.js" onload="window.$ = window.jQuery = module.exports;"></script>
         <script src="../lib/bootstrap-4.0.0/dist/js/bootstrap.bundle.js"></script>
-        <script src="../js/popper.min.js"></script>
+        <script src="../js/common.js"></script>
         <script src="../js/users.js"></script>
    </body>
 </html>

@@ -12,11 +12,6 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
-
     inventoryModule.getGroupsAndSubgroups((err, result) => {
         if(err) {
             $('#contentDiv').html('Error fetching data!');

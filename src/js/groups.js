@@ -46,10 +46,6 @@ $(document).ready(()=>{
             $('#contentDiv').html(resultHTML);
         }
     })
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
 });
 
 $(document).on("click","tr.groupRow", function(e){

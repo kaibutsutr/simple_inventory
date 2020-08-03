@@ -73,11 +73,6 @@ $(document).ready(()=>{
             $('#contentDiv').html(resultHTML);
         }
     });
-
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
 });
 
 window.onerror = function(error, url, line) {

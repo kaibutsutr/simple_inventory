@@ -171,10 +171,6 @@ $(document).ready(()=>{
     commonModule.loadSideMenu('inventoryTransactions.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
 });
 
 window.onerror = function(error, url, line) {

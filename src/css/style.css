@@ -72,8 +72,9 @@ a, a:hover, a:focus {
 }
 
 #sidebar ul li.active > a {
-    color: #fff;
-    background: #656565;
+    color: #656565;
+    background: #fff;
+    font-weight: bold;
 }
 ul ul a {
     font-size: 0.9em !important;

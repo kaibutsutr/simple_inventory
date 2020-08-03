@@ -1,7 +1,7 @@
 const md5 = require('md5');
 
-const remote = require('electron').remote;
-const ipcRenderer = require('electron').ipcRenderer;
+const {remote, ipcRenderer} = require('electron');
+const dialog = remote.dialog;
 const session = remote.session;
 const app = remote.app;
 const myPath = app.getPath('userData');
@@ -22,13 +22,18 @@ commonModule.checkLoggedIn((err, user)=>{
 })
 
 $(document).ready(()=>{
+
+    $('#db').val(require('electron').remote.getGlobal('sharedObject').db);
+
     $('#loginButton').on('click', ()=>{
+
+        let db = commonModule.getValidValue('db');
         let username = commonModule.getValidValue('username');
         let password = commonModule.getValidValue('password');
         if(!username || !password)
             return false;
 
-        usersModule.getUserByUsername(username, (err, result)=>{
+        usersModule.getUserByUsername(username, db, (err, result)=>{
             if(err) {
                 console.log(err);
                 $('#resultDiv').html(err);
@@ -37,12 +42,14 @@ $(document).ready(()=>{
                     $('#resultDiv').html('No such user!');
                 } else {
                     let tempResult = result[0];
-                    console.log(md5(password+'simple_inventory'));
-                    if(md5(password+'simple_inventory') == tempResult.password) {
+                    if(commonModule.encryptPassword(password) == tempResult.password) {
                         $('#resultDiv').html('success!');
                         
                         // Set session cookies & redirect to index.html
                         session.defaultSession.cookies.set({url:SESSION_URL, name:'username', value:username});
+
+                        // Set DB
+                        require('electron').remote.getGlobal('sharedObject').db = db;
                         ipcRenderer.send('redirect-window', 'index.html', []);
 
                     } else {
@@ -53,3 +60,14 @@ $(document).ready(()=>{
         })
     })
 })
+
+function selectDB() {
+    dialog.showOpenDialog({
+        properties: ['openFile']
+    }).then(result => {
+        if(!result.canceled)
+            $('#db').val(result.filePaths[0])
+    }).catch(err => {
+        console.log(err)
+    })
+}

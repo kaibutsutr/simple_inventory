@@ -63,11 +63,6 @@ $(document).ready(()=>{
             });
         }
     });
-
-
-    $('#sidebarCollapse').on('click', function () {
-        $('#sidebar').toggleClass('active');
-    });
 });
 
 window.onerror = function(error, url, line) {

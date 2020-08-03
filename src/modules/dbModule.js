@@ -1,6 +1,10 @@
 const sqlite3 = require('sqlite3').verbose();
-const dbName = require('electron').remote.getGlobal('sharedObject').db;
+let dbName = require('electron').remote.getGlobal('sharedObject').db;
 // const dbName = 'skeleton.db';
+
+exports.setDB = (newDBName)=>{
+    dbName = newDBName;
+}
 
 exports.selectQuery = (query, callback) => {
 
