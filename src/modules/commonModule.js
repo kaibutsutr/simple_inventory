@@ -23,7 +23,8 @@ exports.loadSideMenu = function(currentPage, callback) {
         case 'usertypes.html':
             mainPage = 'users';
             break;
-        case 'myAccount.html':
+        case 'dbSettings.html':
+        case 'userSettings.html':
         case 'createDB.html':
         case 'logout.html':
             mainPage = 'myAccount';
@@ -97,8 +98,11 @@ exports.loadSideMenu = function(currentPage, callback) {
                                 <i class="fa fa-universal-access"></i> My Settings
                             </a>
                             <ul class="collapse `+((mainPage=='myAccount') ? `show` : ``)+` list-unstyled" id="accountMenu">
-                                <li `+((currentPage=='myAccount.html') ? `class="active"` : ``)+`>
-                                    <a href="myAccount.html"><i class="fa fa-universal-access"></i> My Account</a>
+                                <li `+((currentPage=='dbSettings.html') ? `class="active"` : ``)+`>
+                                    <a href="dbSettings.html"><i class="fa fa-cog"></i> DB Settings</a>
+                                </li>
+                                <li `+((currentPage=='userSettings.html') ? `class="active"` : ``)+`>
+                                    <a href="userSettings.html"><i class="fa fa-user"></i> User Settings</a>
                                 </li>
                                 <li `+((currentPage=='createDB.html') ? `class="active"` : ``)+`>
                                     <a href="createDB.html"><i class="fa fa-database"></i> Create DB</a>

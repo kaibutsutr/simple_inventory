@@ -176,3 +176,34 @@ exports.createUsertype = (data, callback)=>{
         }
     })
 }
+
+exports.getDBSettings = (callback)=>{
+    dbModule.selectQuery(`SELECT * FROM dbSettings`, (err, result) => {
+        if(err) {
+            callback(err);
+        } else {
+            console.log(result);
+            callback('', result);
+        }
+    });
+}
+
+exports.saveDBSettings = (name, description, callback)=>{
+    dbModule.update('dbSettings', `property='name'`, {'value':name}, (err, result) => {
+        if(err) {
+            console.log(err);
+        } else {
+
+            // Now update description
+            dbModule.update('dbSettings', `property='description'`, {'value':description}, (err, result) => {
+                if(err) {
+                    console.log(err);
+                } else {
+                    callback('', true);
+                }
+            });    
+
+        }
+    });
+
+}

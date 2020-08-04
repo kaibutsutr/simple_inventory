@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 const app = remote.app;
@@ -12,7 +10,7 @@ const commonModule = require(appPath+'/src/modules/commonModule.js');
 $(document).ready(()=>{
 
     // Load side menu
-    commonModule.loadSideMenu('myAccount.html', (err, html)=>{
+    commonModule.loadSideMenu('userSettings.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
 
