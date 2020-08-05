@@ -48,6 +48,7 @@ exports.update = (tableName, whereCondition, dataObject, callback) => {
         dataSet += `${key}='${dataObject[key]}'`;
     }
 
+    console.log(`UPDATE ${tableName} SET ${dataSet} WHERE ${whereCondition}`);
     db.run(`UPDATE ${tableName} SET ${dataSet} WHERE ${whereCondition}`, [], (err, result) => {
 
         if(err)

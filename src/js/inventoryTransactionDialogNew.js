@@ -149,7 +149,7 @@ function newTransaction(itemID) {
             $('#contentDiv').html('Could not save data!');
             console.log(err);
         } else {
-            $('#contentDiv').html('Success!');
+            cancelDialog();
         }
     })
 }

@@ -1,37 +1,14 @@
 const dbModule = require('./dbModule.js');
+const util = require('util');
+var selectQuery = util.promisify(dbModule.selectQuery);
 
 exports.getCurrentInventory = (callback) => {
-    groupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM groups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+    let groupsQuery = selectQuery('SELECT * FROM groups');
+    let subgroupsQuery = selectQuery('SELECT * FROM subgroups');
+    let itemsQuery = selectQuery('SELECT * FROM items');
+    let uomQuery = selectQuery('SELECT * FROM uom');
 
-    subgroupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM subgroups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    itemsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM items', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    inventoryQuery = new Promise((resolve, reject) => {
+    let inventoryQuery = new Promise((resolve, reject) => {
         dbModule.selectQuery('SELECT itemID, SUM(receipts) as closingStock FROM entries GROUP BY itemID', function(err, rows) {
             if(err) {
                 reject(err);
@@ -41,16 +18,6 @@ exports.getCurrentInventory = (callback) => {
                     inventoryResult[rows[key].itemID] = rows[key].closingStock;
                 }
                 resolve(inventoryResult);
-            }
-        });
-    });
-
-    uomQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM uom', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
             }
         });
     });
@@ -127,25 +94,8 @@ exports.editSubgroup = (subgroupID, data, callback) => {
 }
 
 exports.getGroupsAndSubgroups = (callback) => {
-    groupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM groups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    subgroupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM subgroups ORDER BY groupID ASC', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+    let groupsQuery = selectQuery('SELECT * FROM groups');
+    let subgroupsQuery = selectQuery('SELECT * FROM subgroups ORDER BY groupID ASC');
 
     Promise.all([groupsQuery, subgroupsQuery])
             .then((results)=>{
@@ -157,7 +107,8 @@ exports.getGroupsAndSubgroups = (callback) => {
 }
 
 exports.getSubgroup = (subgroupID, callback) => {
-    dbModule.selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName FROM subgroups INNER JOIN groups ON subgroups.groupID = groups.id WHERE subgroups.id=${subgroupID}`, (err, rows) => {
+    dbModule.selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName 
+                            FROM subgroups INNER JOIN groups ON subgroups.groupID = groups.id WHERE subgroups.id=${subgroupID}`, (err, rows) => {
         if(err) {
             callback(err);
         } else {
@@ -178,25 +129,8 @@ exports.getSubgroup = (subgroupID, callback) => {
 }
 
 exports.getSubgroupForEdit = (subgroupID, callback) => {
-    groupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM groups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    subgroupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT * FROM subgroups WHERE id = '${subgroupID}'`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+    let groupsQuery = selectQuery('SELECT * FROM groups');
+    let subgroupsQuery = selectQuery(`SELECT * FROM subgroups WHERE id = '${subgroupID}'`)
 
     Promise.all([groupsQuery, subgroupsQuery])
             .then((results)=>{
@@ -208,35 +142,9 @@ exports.getSubgroupForEdit = (subgroupID, callback) => {
 }
 
 exports.getItems = (callback) => {
-    groupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM groups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    subgroupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM subgroups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    itemsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT items.*, uom.name AS uomName FROM items INNER JOIN uom WHERE uom.id=items.uomID', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+    let groupsQuery = selectQuery('SELECT * FROM groups');
+    let subgroupsQuery = selectQuery('SELECT * FROM subgroups');
+    let itemsQuery = selectQuery('SELECT items.*, uom.name AS uomName FROM items INNER JOIN uom ON uom.id=items.uomID')
 
     Promise.all([groupsQuery, subgroupsQuery, itemsQuery])
             .then((results)=>{
@@ -249,13 +157,17 @@ exports.getItems = (callback) => {
 }
 
 exports.getItem = (itemID, callback) => {
-    dbModule.selectQuery(`SELECT items.*, uom.name AS uomName, uom.prefix, uom.postfix, uom.roundoff FROM items INNER JOIN uom WHERE items.uomID=uom.id AND items.id = ${itemID}`, (err, rows) => {
+    dbModule.selectQuery(`SELECT items.*, uom.name AS uomName, uom.prefix, uom.postfix, uom.roundoff FROM items 
+                            INNER JOIN uom ON items.uomID=uom.id 
+                            WHERE items.id = ${itemID}`, (err, rows) => {
         if(err) {
             callback(err);
         } else {
             let subgroupID = rows[0].subgroupID;
             if(subgroupID!=0) {
-                dbModule.selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName FROM subgroups INNER JOIN groups ON subgroups.groupID = groups.id WHERE subgroups.id=${subgroupID}`, (err, subgroupDetails) => {
+                dbModule.selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName FROM subgroups 
+                                        INNER JOIN groups ON subgroups.groupID = groups.id 
+                                        WHERE subgroups.id=${subgroupID}`, (err, subgroupDetails) => {
                     if(err) {
                         callback(err)
                     } else {
@@ -271,36 +183,11 @@ exports.getItem = (itemID, callback) => {
 }
 
 exports.getItemForEdit = (itemID, callback) => {
-
-    itemsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT * FROM items WHERE id = '${itemID}'`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    subgroupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName FROM subgroups INNER JOIN groups ON subgroups.groupID = groups.id ORDER BY subgroups.groupID`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    uomQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM uom', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+    let itemsQuery = selectQuery(`SELECT * FROM items WHERE id = '${itemID}'`);
+    let subgroupsQuery = selectQuery(`SELECT subgroups.id, subgroups.name, subgroups.groupID, groups.name AS groupName 
+                                        FROM subgroups INNER JOIN groups ON subgroups.groupID = groups.id 
+                                        ORDER BY subgroups.groupID`);
+    let uomQuery = selectQuery('SELECT * FROM uom');
 
     Promise.all([itemsQuery, subgroupsQuery, uomQuery])
             .then((results)=>{
@@ -338,36 +225,12 @@ exports.editUOM = (uomID, data, callback) => {
 }
 
 exports.getItemTransactionDetails = (itemID, fromDate, toDate, callback) => {
-
-    openingStockQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT itemID, SUM(receipts) AS openingStock FROM entries WHERE itemID = '${itemID}' AND datetime < '${fromDate}'`, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-
-    transactionsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT * FROM entries WHERE itemID = '${itemID}' AND datetime >= '${fromDate}' AND datetime <= '${toDate}' ORDER BY datetime ASC`, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
-
-    uomQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT uom.*, items.subgroupID, items.name AS itemName FROM UOM INNER JOIN items WHERE items.id = '${itemID}' AND items.uomID = uom.id`, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
+    let openingStockQuery = selectQuery(`SELECT itemID, SUM(receipts) AS openingStock FROM entries 
+                                WHERE itemID = '${itemID}' AND datetime < '${fromDate}'`);
+    let transactionsQuery = selectQuery(`SELECT * FROM entries WHERE itemID = '${itemID}' AND datetime >= '${fromDate}' AND datetime <= '${toDate}' ORDER BY datetime ASC`);
+    let uomQuery = selectQuery(`SELECT uom.*, items.subgroupID, items.name AS itemName FROM uom 
+                        INNER JOIN items ON  items.uomID = uom.id
+                        WHERE items.id = '${itemID}'`);
 
     Promise.all([openingStockQuery, transactionsQuery, uomQuery])
             .then((results)=>{
@@ -385,35 +248,9 @@ exports.newTransaction = (data, callback)=>{
 }
 
 exports.getGroupsSubgroupsAndUOMs = (callback) => {
-    groupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM groups', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    subgroupsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM subgroups ORDER BY groupID ASC', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    uomQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery('SELECT * FROM uom', (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
+    let groupsQuery = selectQuery('SELECT * FROM groups');
+    let subgroupsQuery = selectQuery('SELECT * FROM subgroups ORDER BY groupID ASC');
+    let uomQuery = selectQuery('SELECT * FROM uom');
 
     Promise.all([groupsQuery, subgroupsQuery, uomQuery])
             .then((results)=>{
@@ -435,13 +272,22 @@ exports.getSavedValuations = (callback)=>{
 }
 
 exports.getValuationDetails = (valuationID, callback)=>{
-    dbModule.selectQuery(`SELECT * FROM valuations WHERE id = '${valuationID}'`, (err, rows) => {
-        if(err) {
-            callback(err);
-        } else {
-            callback('', rows);
+    if(!valuationID) {
+        let tempResult = {
+            0: {
+                date: 0
+            }
         }
-    });
+        callback('', tempResult);
+    } else {
+        dbModule.selectQuery(`SELECT * FROM valuations WHERE id = '${valuationID}'`, (err, rows) => {
+            if(err) {
+                callback(err);
+            } else {
+                callback('', rows);
+            }
+        });
+    }
 }
 
 exports.createValuation = (data, callback)=>{
@@ -461,52 +307,18 @@ exports.createValuation = (data, callback)=>{
     });
 }
 
+exports.editValuation = (valuationID, data, callback)=>{
+    dbModule.update('valuations', `id='${valuationID}'`, data, callback);
+}
+
 exports.getValuation = (valuationID, callback)=>{
-    valuationQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT * FROM valuations WHERE id = '${valuationID}'`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    valuationItemsQuery = new Promise((resolve, reject) => {
-        dbModule.selectQuery(`SELECT * FROM valuationItems WHERE valuationID = '${valuationID}'`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        });
-    });
-
-    itemsQuery = new Promise((resolve, reject)=>{
-        dbModule.selectQuery(`SELECT items.*, subgroups.name AS subgroupName, groups.name AS groupName 
+    let valuationQuery = selectQuery(`SELECT * FROM valuations WHERE id = '${valuationID}'`);
+    let valuationItemsQuery = selectQuery(`SELECT * FROM valuationItems WHERE valuationID = '${valuationID}'`);
+    let itemsQuery = selectQuery(`SELECT items.*, subgroups.name AS subgroupName, groups.name AS groupName 
                                 FROM items INNER JOIN subgroups, groups 
                                 WHERE items.subgroupID=subgroups.id AND subgroups.groupID=groups.id
-                                ORDER BY subgroupName ASC`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-
-        })
-    })
-
-    uomsQuery = new Promise((resolve, reject)=>{
-        dbModule.selectQuery(`SELECT * FROM uom`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-
-        })
-    })
-
+                                ORDER BY subgroupID ASC`);
+    let uomsQuery = selectQuery(`SELECT * FROM uom`);
     Promise.all([valuationQuery, valuationItemsQuery, itemsQuery, uomsQuery])
             .then((results)=>{
                 callback('', results);
@@ -519,57 +331,22 @@ exports.getValuation = (valuationID, callback)=>{
 
 exports.getValuationItemWise = (openingDate, closingDate, callback)=>{
     // Get opening stock
-    openingQuery = new Promise((resolve, reject)=>{
-        dbModule.selectQuery(`SELECT SUM(receipts) AS openingStock, itemID, unitValue FROM entries WHERE datetime < '${openingDate}' GROUP BY itemID`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-
-        })
-    })
+    let openingQuery = selectQuery(`SELECT SUM(receipts) AS openingStock, itemID, unitValue FROM entries WHERE datetime < '${openingDate}' GROUP BY itemID`);
 
     // Get closing stock
-    closingQuery = new Promise((resolve, reject)=>{
-        dbModule.selectQuery(`SELECT SUM(receipts) AS closingStock, itemID FROM entries WHERE datetime < ${closingDate} GROUP BY itemID`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-
-        })
-    })
+    let closingQuery = selectQuery(`SELECT SUM(receipts) AS closingStock, itemID FROM entries WHERE datetime < ${closingDate} GROUP BY itemID`);
 
     // Get receipts from openignDate(including) to closingDate(excluding)
-    receiptsQuery = new Promise((resolve, reject)=>{
-        dbModule.selectQuery(`SELECT receipts, datetime, unitValue, itemID 
+    let receiptsQuery = selectQuery(`SELECT receipts, datetime, unitValue, itemID 
                                 FROM entries 
                                 WHERE datetime > '${openingDate}' AND datetime < '${closingDate}' AND receipts>0 
-                                ORDER BY itemID`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-
-        })
-    })
+                                ORDER BY itemID`);
 
     // Get receipts from openignDate(including) to closingDate(excluding)
-    issuesQuery = new Promise((resolve, reject)=>{
-        dbModule.selectQuery(`SELECT SUM(receipts) AS totalIssues, itemID 
+    let issuesQuery = selectQuery(`SELECT SUM(receipts) AS totalIssues, itemID 
                                 FROM entries 
                                 WHERE datetime > '${openingDate}' AND datetime < '${closingDate}' AND receipts<0 
-                                GROUP BY itemID`, (err, rows) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve(rows);
-            }
-        })
-    })
+                                GROUP BY itemID`);
 
     Promise.all([openingQuery, closingQuery, receiptsQuery, issuesQuery])
         .then((results)=>{

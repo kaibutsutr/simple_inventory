@@ -4,6 +4,7 @@ const app = remote.app;
 const myPath = app.getPath('userData');
 const appPath = app.getAppPath();
 const moment = require('moment');
+const util = require('util');
 
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
@@ -234,7 +235,6 @@ function saveValuation(valuationID) {
         let tempID = inputs[i].id;
         if(tempID) {
             let arr = tempID.split('_');
-            console.log(arr);
             if(arr[0]=='closingStock')
                 closingStock[arr[1]] = inputs[i].value;
             if(arr[0]=='unitValue')
@@ -242,6 +242,10 @@ function saveValuation(valuationID) {
         }
     }
 
+    let totalValue = 0;
+    let saveValuationItem = util.promisify(inventoryModule.saveValuationItem);
+    let promises = [];
+    count = 0;
     for(let itemID in closingStock) {
         console.log(`Item ${itemID} - ${closingStock[itemID]} @ ${unitValue[itemID]}`);
         let data = {
@@ -249,14 +253,47 @@ function saveValuation(valuationID) {
             closingStock: closingStock[itemID],
             unitValue: unitValue[itemID]
         }
-        inventoryModule.saveValuationItem(valuationID, data, (err, result)=>{
-            if(err) {
-                console.log(err);
-            } else {
-                ipcRenderer.send('redirect-window', 'valuations.html');
-            }
+        promises[count++] = saveValuationItem(valuationID, data);
+        totalValue += closingStock[itemID] * unitValue[itemID];
+    }
+
+    async function doStuff(promises, valuationID, totalValue) {
+        console.log('Saving all valuation items...');
+        console.log(promises);
+        if(promises.length > 0)
+            await saveAllValuationItems(promises);
+        console.log('Done - Saved all valuation items.');
+        console.log('Saving totalValue...');
+        await saveTotalItems(valuationID, totalValue);
+        console.log('Done - totalValue is saved.');
+        console.log('Redirecting to valuation.html');
+        cancelEditValuation();
+    }
+
+    function saveAllValuationItems(promises) {
+        return new Promise((resolve, reject)=>{
+            Promise.all(promises)
+            .then((result)=>{
+                resolve(result);
+            })
+            .catch((err)=>{
+                reject(err);
+            });
         })
     }
+
+    function saveTotalItems(valuationID, totalValue) {
+        return new Promise((resolve, reject)=>{
+            inventoryModule.editValuation(valuationID, {totalValue}, (err, result)=>{
+                if(err)
+                    reject(err);
+                else
+                    resolve(result);
+            })
+        })
+    }
+
+    doStuff(promises, valuationID, totalValue);
 }
 
 function cancelEditValuation() {

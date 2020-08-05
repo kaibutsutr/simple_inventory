@@ -1,4 +1,5 @@
 const md5 = require('md5');
+const fs = require('fs');
 
 const {remote, ipcRenderer} = require('electron');
 const dialog = remote.dialog;
@@ -49,7 +50,9 @@ $(document).ready(()=>{
                         session.defaultSession.cookies.set({url:SESSION_URL, name:'username', value:username});
 
                         // Set DB
-                        require('electron').remote.getGlobal('sharedObject').db = db;
+                        remote.getGlobal('sharedObject').db = db;
+                        let userSettings = remote.getGlobal('sharedObject');
+                        fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
                         ipcRenderer.send('redirect-window', 'index.html', []);
 
                     } else {

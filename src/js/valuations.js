@@ -25,11 +25,6 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
-    // Load username & DB name & font-size
-    $('#usernameButtonSpan').html(username);
-    $('#dbButtonSpan').html(dbName);
-    commonModule.setFontSize();
-
     inventoryModule.getSavedValuations(function(err, result) {
         if(err) {
             console.log(err);
@@ -41,7 +36,7 @@ $(document).ready(()=>{
                                     <tr>
                                         <th>Date</th>
                                         <th>Comments</th>
-                                        <th>Total Value</th>
+                                        <th class="text-right">Total Value</th>
                                     </tr>
                                 </thead>
                                 <tbody>`;
@@ -51,7 +46,7 @@ $(document).ready(()=>{
                 resultHTML += `<tr class="clickable valuationRow" id="row_${result[key].id}">
                                     <td>${tempDate}</td>
                                     <td>${result[key].comments}</td>
-                                    <td></td>
+                                    <td class="text-right">${commonModule.currency(result[key].totalValue)}</td>
                                 </tr>`;
             }
             resultHTML += `</tbody></table>`;

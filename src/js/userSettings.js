@@ -1,3 +1,4 @@
+const fs = require('fs');
 const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
 const app = remote.app;
@@ -8,41 +9,20 @@ const usersModule = require(appPath+'/src/modules/usersModule.js');
 const commonModule = require(appPath+'/src/modules/commonModule.js');
 
 $(document).ready(()=>{
-
     // Load side menu
     commonModule.loadSideMenu('userSettings.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
 
-    // Load users
-    usersModule.loadUsers((err, rows)=>{
-        if(err) {
-            $('#usersDiv').html(err);
-        } else {
-            // Table
-            let resultHTML = `<table class="table table-sm table-light table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>S.No.</th>
-                                        <th>Username</th>
-                                        <th>Usertype</th>
-                                    </tr>
-                                </thead>`;
-
-            for(let i=0 ; i<rows.length ; i++) {
-                resultHTML += `<tr>
-                                    <td>${i+1}</td>
-                                    <td>${rows[i].username}</td>
-                                    <td>${rows[i].usertypeID}</td>
-                                </tr>`;
-            }
-            resultHTML += '</table>';
-            $('#usersDiv').html(resultHTML);
-            
-        }
-    });
+    // Load font size
+    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    $('#fontSize').val(currentSize);
 });
 
 window.onerror = function(error, url, line) {
     console.log(error);
 };
+
+function changePassword() {
+    ipcRenderer.send('open-new-window', 'userSettingsDialogChangePassword.html', [], 600, 600);
+}

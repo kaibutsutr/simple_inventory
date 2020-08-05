@@ -68,6 +68,7 @@ $(document).ready(()=>{
                                         </div>
                                     </div>
                                     <div class="container text-center" style="width:100%">
+                                        <input type="hidden" id="oldUsername" value="${result[0].username}" />
                                         <button class="btn btn-secondary" id="editUOM" onclick="editUserSave(${userID})">Save</button>
                                         <button class="btn btn-secondary" id="cancel" onclick="cancelDialog()">Cancel</button>
                                     </div>`;
@@ -102,7 +103,19 @@ function editUserSave(userID) {
             $('#usersDiv').html('Could not save changes!');
             console.log(err);
         } else {
-            ipcRenderer.send('redirect-window', 'users.html');
+            // Logout if user changes his own username
+            let currentUsername = '';
+            commonModule.checkLoggedIn((err, result)=>{
+                if(!err)
+                    currentUsername = result;
+                let oldUsername = $('#oldUsername').val();
+                if(oldUsername == currentUsername) {
+                    alert('You have changed your own username\nPlease login again with username: '+username);
+                    ipcRenderer.send('redirect-window', 'logout.html');
+                } else {
+                    ipcRenderer.send('redirect-window', 'users.html');
+                }
+            })
         }
     })
 }

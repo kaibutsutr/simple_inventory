@@ -1,14 +1,8 @@
 const fs = require('fs');
 
-const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
-const dialog = remote.dialog;
-const app = remote.app;
-const myPath = app.getPath('userData');
-const appPath = app.getAppPath();
-
-const usersModule = require(appPath+'/src/modules/usersModule.js');
-const commonModule = require(appPath+'/src/modules/commonModule.js');
+const dialog = require('electron').remote.dialog;
+const commonModule = require('../../src/modules/commonModule.js');
 
 $(document).ready(()=>{
 
@@ -41,7 +35,15 @@ function createDB() {
     fs.copyFile('./src/db/skeleton.db', dbFolder+'/'+dbName, (err) => {
         if (err) {
             console.log(err);
+            alert(err);
         } else {
+            console.log('Successfully copied database');
+            // Set DB
+            require('electron').remote.getGlobal('sharedObject').db = dbFolder+'/'+dbName;
+            let userSettings = require('electron').remote.getGlobal('sharedObject');
+            fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+
+            alert('Successfully created new Database!\nPlease sign in for first time with admin / pass@1234');
             ipcRenderer.send('redirect-window', 'logout.html', []);
         }
     });

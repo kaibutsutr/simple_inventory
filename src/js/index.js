@@ -1,16 +1,10 @@
-const fs = require('fs');
-
-const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
-const app = remote.app;
-const myPath = app.getPath('userData');
-const appPath = app.getAppPath();
-
-const commonModule = require(appPath+'/src/modules/commonModule.js');
-const inventoryModule = require(appPath+'/src/modules/inventoryModule.js');
+const commonModule = require('../../src/modules/commonModule.js');
+const inventoryModule = require('../../src/modules/inventoryModule.js');
 
 let dbName = require('electron').remote.getGlobal('sharedObject').db;
 let username;
+
 commonModule.checkLoggedIn((err, user)=>{
     if(err) {
         ipcRenderer.send('redirect-window', 'login.html', []);
@@ -29,7 +23,6 @@ $(document).ready(()=>{
     // Load username & DB name & font-size
     $('#usernameButtonSpan').html(username);
     $('#dbButtonSpan').html(dbName);
-    commonModule.setFontSize();
 
     inventoryModule.getCurrentInventory(function(err, result) {
         if(err) {

@@ -82,11 +82,11 @@ window.onerror = function(error, url, line) {
 function createValuation() {
     let date = commonModule.getValidValue('date');
     let comments = commonModule.getValidValue('comments');
-    lastValuationID = commonModule.getValidValue('lastValuationID');
+    let lastValuationID = commonModule.getValidValue('lastValuationID');
     if(!date || !comments)
         return false;
 
-    if($('#lastValuationID').children().length == 0)
+    if(($('#lastValuationID').children().length != 0) && !lastValuationID)
         return false;
 
     let data = {date:moment(date,'DD-MM-YYYY').unix(), comments, lastValuationID};

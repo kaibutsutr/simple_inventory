@@ -16,14 +16,24 @@ exports.usertypePermissions = {
 }
 
 exports.getUserByUsername = (username, db, callback) => {
-    dbModule.setDB(db);
+    if(db)
+        dbModule.setDB(db);
+        
     dbModule.selectQuery(`SELECT * FROM users WHERE username = '${username}'`, (err, result) => {
         if(err) {
             callback(err);
         } else {
-            console.log(result);
             callback('', result);
         }
+    });
+}
+
+exports.setPassword = (username, password, callback)=>{
+    dbModule.update('users', `username='${username}'`, {password}, (err, result)=>{
+        if(err)
+            callback(err);
+        else
+            callback('', true);
     });
 }
 

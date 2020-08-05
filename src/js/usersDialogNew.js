@@ -53,9 +53,9 @@ $(document).ready(()=>{
                                         <label class="col-form-label">Password</label>
                                     </div>
                                     <div class="col-md-6 col-lg-6">
-                                        <input type="password" id="password" value="password1234" class="form-control" />
+                                        <input type="password" id="password" value="pass@1234" class="form-control" />
                                         <br />
-                                        <span class="smallFont">Default password: <b>password1234</b></span>
+                                        <span class="smallFont">Default password: <b>pass@1234</b></span>
                                     </div>
                                 </div>
                                 <div class="text-center" style="width:100%;">
@@ -74,6 +74,11 @@ function createUser() {
     let password = commonModule.getValidValue('password');
     if(!username || !usertypeID || !password)
         return false;
+
+    if(!commonModule.validatePassword(password)) {
+        alert('Password should be 6-16 characters and contain atleast one number and one special character');
+        return false;
+    }
 
     let data = {
             username, 

@@ -228,6 +228,9 @@ exports.increaseFontSize = ()=>{
     currentSize += 2;
     require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
     $(document.body).css('fontSize', currentSize+'px');
+    let userSettings = remote.getGlobal('sharedObject');
+    fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+    $('#fontSize').val(currentSize);
 }
 
 exports.decreaseFontSize = ()=>{
@@ -235,11 +238,9 @@ exports.decreaseFontSize = ()=>{
     currentSize -= 2;
     require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
     $(document.body).css('fontSize', currentSize+'px');
-}
-
-exports.setFontSize = ()=>{
-    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
-    $(document.body).css('fontSize', currentSize+'px');
+    let userSettings = remote.getGlobal('sharedObject');
+    fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+    $('#fontSize').val(currentSize);
 }
 
 exports.fold = (input, lineSize, lineArray) => {
@@ -307,4 +308,19 @@ exports.getQuickMenu = (callback)=>{
                         </div>`;
         callback('', resultHTML);
     })
+}
+
+exports.validatePassword = (password)=>{
+    let minNumberofChars = 6;
+    let maxNumberofChars = 16;
+    if(password.length < minNumberofChars || password.length > maxNumberofChars) {
+        return false;
+    }
+
+    let regEx = /^(?=.*[\d])(?=.*[!@#$%^&*])[\w!@#$%^&*]{6,16}$/;
+    if(!regEx.test(password)) {
+        return false;
+    }
+
+    return true;
 }

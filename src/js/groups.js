@@ -1,5 +1,4 @@
 const ipcRenderer = require('electron').ipcRenderer;
-
 const commonModule = require('../../src/modules/commonModule.js');
 const inventoryModule = require('../../src/modules/inventoryModule.js');
 
