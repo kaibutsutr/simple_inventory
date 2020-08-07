@@ -25,7 +25,28 @@ commonModule.checkLoggedIn((err, user)=>{
 
 $(document).ready(()=>{
 
-    $('#db').val(require('electron').remote.getGlobal('sharedObject').db);
+    let db = require('electron').remote.getGlobal('sharedObject').db;
+
+    let firstTimeUse = false;
+    if(db=='') {
+        // Move skeleton.db from /src/db/skeleton.db to userData folder
+        let dbPath = commonModule.getDefaultDBPath();
+        dbPath = path.join(dbPath, 'firstDB.db');
+        if(!fs.existsSync(dbPath)) {
+            fs.copyFileSync(path.join(appPath, 'src', 'db', 'skeleton.db'), dbPath);
+        }
+        console.log('New DB file copied to: '+dbPath);
+        $('#db').val(dbPath);
+
+        // First time instructions
+        $('#firstTimeInstructions').html(`<b>Welcome to Simple Inventory!</b><br />We realize that you are using 
+            this installation of Simple Inventory for the first time. 
+            <br /><br />Please login using <b>admin / pass@1234</b><br />
+            <br />Default database: <b>${dbPath}</b>`);
+
+    } else {
+        $('#db').val(db);
+    }
 
     $('#loginButton').on('click', ()=>{
 
@@ -67,8 +88,14 @@ $(document).ready(()=>{
 })
 
 function selectDB() {
+    let defaultPath = commonModule.getDefaultDBPath();
+    let db = $('#db').val();
+    if(db) {
+        defaultPath = path.dirname(db);
+    }
     dialog.showOpenDialog({
-        properties: ['openFile']
+        properties: ['openFile'],
+        defaultPath: defaultPath
     }).then(result => {
         if(!result.canceled) {
             let db = result.filePaths[0];

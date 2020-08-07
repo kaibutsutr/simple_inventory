@@ -333,3 +333,15 @@ exports.checkDBCompatibility = (version, dbVersion)=>{
     else
         return false;
 }
+
+exports.getDefaultDBPath = ()=>{
+    let dbPath = require('path').join(app.getPath('home'), 'SimpleInventory');
+    if(!fs.existsSync(dbPath)) {
+        fs.mkdirSync(dbPath);
+    }
+    dbPath = require('path').join(dbPath, 'databases');
+    if(!fs.existsSync(dbPath)) {
+        fs.mkdirSync(dbPath);
+    }
+    return dbPath;
+}
