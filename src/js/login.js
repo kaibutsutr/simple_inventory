@@ -5,11 +5,11 @@ const {remote, ipcRenderer} = require('electron');
 const dialog = remote.dialog;
 const session = remote.session;
 const app = remote.app;
-const myPath = app.getPath('userData');
+const path = require('path');
 const appPath = app.getAppPath();
 
-const commonModule = require(appPath+'/src/modules/commonModule.js');
-const usersModule = require(appPath+'/src/modules/usersModule.js');
+const commonModule = require(path.join(appPath,'src','modules','commonModule.js'));
+const usersModule = require(path.join(appPath,'src','modules','usersModule.js'));
 
 const SESSION_URL = remote.getGlobal('sharedObject').sessionURL;
 
@@ -52,7 +52,8 @@ $(document).ready(()=>{
                         // Set DB
                         remote.getGlobal('sharedObject').db = db;
                         let userSettings = remote.getGlobal('sharedObject');
-                        fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+                        
+                        fs.writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
                         ipcRenderer.send('redirect-window', 'index.html', []);
 
                     } else {

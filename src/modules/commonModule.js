@@ -228,8 +228,8 @@ exports.increaseFontSize = ()=>{
     currentSize += 2;
     require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
     $(document.body).css('fontSize', currentSize+'px');
-    let userSettings = remote.getGlobal('sharedObject');
-    fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    require('fs').writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
     $('#fontSize').val(currentSize);
 }
 
@@ -238,8 +238,8 @@ exports.decreaseFontSize = ()=>{
     currentSize -= 2;
     require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
     $(document.body).css('fontSize', currentSize+'px');
-    let userSettings = remote.getGlobal('sharedObject');
-    fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    require('fs').writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
     $('#fontSize').val(currentSize);
 }
 

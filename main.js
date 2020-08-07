@@ -1,10 +1,8 @@
-const {app, BrowserWindow, ipcMain, dialog, Menu} = require('electron');
+const {app, BrowserWindow, ipcMain, Menu} = require('electron');
 const url = require('url');
 const path = require('path');
 const appPath = app.getAppPath();
 const fs = require('fs');
-
-const commonModule = require(__dirname+'/src/modules/commonModule.js');
 
 var win;
 var dialogWindow;
@@ -43,7 +41,7 @@ Menu.setApplicationMenu(menu);
 app.on('ready', ()=>{
     // Load version
     try {
-        version = fs.readFileSync('./src/misc/version');
+        version = fs.readFileSync(path.join(appPath,'src', 'misc', 'version'));
     } catch(e) {
         console.log('Version file corrupted! Exiting...')
         app.quit();
@@ -52,7 +50,7 @@ app.on('ready', ()=>{
     // Load userSettings
     let userSettings;
     try {
-        userSettings = fs.readFileSync('./src/misc/userSettings');
+        userSettings = fs.readFileSync(path.join(appPath,'src','misc','userSettings'));
         userSettings = JSON.parse(userSettings);
     } catch(e) {
         userSettings = {
@@ -61,7 +59,7 @@ app.on('ready', ()=>{
                             fontSize: 14
                         };
         // Write this usersettings to file
-        fs.writeFileSync('./src/misc/userSettings', JSON.stringify(userSettings));
+        fs.writeFileSync(path.join(appPath,'src','misc','userSettings'), JSON.stringify(userSettings));
     }
     userSettings.version = version;
     global.sharedObject = userSettings;
@@ -74,7 +72,7 @@ app.on('ready', ()=>{
         }
     });
 
-    win.loadFile(appPath+'/src/html/login.html');
+    win.loadFile(path.join(appPath,'src','html','login.html'));
 
     win.webContents.on('crashed', (e) => {
         console.log(e);
@@ -99,7 +97,7 @@ app.on('activate', ()=>{
 
 ipcMain.on('redirect-window', (event, fileName, params)=>{
     paramsMain = params;
-    win.loadURL(`file://${__dirname}/src/html/${fileName}`);
+    win.loadURL('file://'+path.join(appPath, 'src', 'html', fileName));
 });
 
 ipcMain.on('variable-request', function (event, arg) {
@@ -119,7 +117,7 @@ ipcMain.on('open-new-window', (event, fileName, params, width, height) => {
         dialogWindow.setMenuBarVisibility(false);
     }
     try {
-        dialogWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
+        dialogWindow.loadURL('file://'+path.join(appPath, 'src', 'html', fileName));
     } catch(e) {
         dialogWindow = new BrowserWindow({
             width:800, 
@@ -130,9 +128,9 @@ ipcMain.on('open-new-window', (event, fileName, params, width, height) => {
             }
         });
         dialogWindow.setMenuBarVisibility(false);
-        dialogWindow.loadURL(`file://${__dirname}/src/html/${fileName}`);
+        dialogWindow.loadURL('file://'+path.join(appPath, 'src', 'html', fileName));
     }
-    dialogWindow.setAlwaysOnTop(false);
+    dialogWindow.setAlwaysOnTop(true);
 
     dialogWindow.on('close', ()=>{
         win.reload();
@@ -151,6 +149,7 @@ function showAboutDialog() {
             nodeIntegration: true
         }
     });
-    aboutDialog.loadURL(`file://${__dirname}/src/html/aboutDialog.html`);
+    aboutDialog.loadURL('file://'+path.join(appPath, 'src', 'html', 'aboutDialog.html'));
     aboutDialog.setMenuBarVisibility(false);
+    aboutDialog.setAlwaysOnTop(true);
 }

@@ -1,6 +1,9 @@
 const ipcRenderer = require('electron').ipcRenderer;
-const inventoryModule = require('../../src/modules/inventoryModule.js');
 const remote = require('electron').remote;
+
+const path = require('path');
+const appPath = require('electron').remote.app.getAppPath();
+const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
 
 var groupID;
 

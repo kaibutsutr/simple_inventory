@@ -1,13 +1,8 @@
-const fs = require('fs');
-
-const remote = require('electron').remote;
 const ipcRenderer = require('electron').ipcRenderer;
-const app = remote.app;
-const myPath = app.getPath('userData');
-const appPath = app.getAppPath();
-
-const usersModule = require(appPath+'/src/modules/usersModule.js');
-const commonModule = require(appPath+'/src/modules/commonModule.js');
+const path = require('path');
+const appPath = require('electron').remote.app.getAppPath();
+const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 $(document).ready(()=>{
 

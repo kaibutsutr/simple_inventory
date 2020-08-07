@@ -1,4 +1,4 @@
-let getQuickMenu = require('../../src/modules/commonModule.js').getQuickMenu;
+let getQuickMenu = require(require('path').join(appPath, 'src', 'modules', 'commonModule.js')).getQuickMenu;
 
 $(document).ready(()=>{
     
