@@ -57,8 +57,10 @@ $(document).ready(()=>{
                                     </div>
                                 </div>
                                 <div class="container text-center" style="width:100%">
-                                    <button class="btn btn-secondary" id="editUOM" onclick="editUOM(${uomID})">Edit</button>
-                                    <button class="btn btn-secondary" id="cancelButton" onclick="cancelDialog()">Cancel</button>
+                                    <button class="btn btn-outline-secondary" id="editUOM" onclick="editUOM(${uomID})">
+                                        <i class="fa fa-edit"></i> Edit</button>
+                                    <button class="btn btn-outline-secondary" id="cancelButton" onclick="cancelDialog()">
+                                        <i class="fa fa-close"></i> Cancel</button>
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }

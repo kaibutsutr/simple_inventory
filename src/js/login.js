@@ -10,6 +10,7 @@ const appPath = app.getAppPath();
 
 const commonModule = require(path.join(appPath,'src','modules','commonModule.js'));
 const usersModule = require(path.join(appPath,'src','modules','usersModule.js'));
+const dbModule = require(path.join(appPath,'src','modules','dbModule.js'));
 
 const SESSION_URL = remote.getGlobal('sharedObject').sessionURL;
 
@@ -69,8 +70,26 @@ function selectDB() {
     dialog.showOpenDialog({
         properties: ['openFile']
     }).then(result => {
-        if(!result.canceled)
-            $('#db').val(result.filePaths[0])
+        if(!result.canceled) {
+            let db = result.filePaths[0];
+            dbModule.setDB(db);
+            dbModule.selectQuery('SELECT * FROM dbSettings WHERE property = \'version\'', (err, result)=>{
+                if(err) {
+                    $('#db').val('error!');
+                    console.log(error);
+                } else {
+                    let dbVersion = result[0].value;
+                    let version = require('electron').remote.getGlobal('sharedObject').version;
+                    if(commonModule.checkDBCompatibility(version, dbVersion)) {
+                        $('#db').val(db);
+                        return true;
+                    } else {
+                        alert(`dbVersion v${dbVersion} is incompatible with software v${version}`);
+                        return true;
+                    }
+                }
+            })
+        }
     }).catch(err => {
         console.log(err)
     })

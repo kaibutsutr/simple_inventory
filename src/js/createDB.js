@@ -1,6 +1,7 @@
 const fs = require('fs');
 const appPath = require('electron').remote.app.getAppPath();
 
+const path = require('path');
 const ipcRenderer = require('electron').ipcRenderer;
 const dialog = require('electron').remote.dialog;
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));

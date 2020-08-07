@@ -324,3 +324,12 @@ exports.validatePassword = (password)=>{
 
     return true;
 }
+
+exports.checkDBCompatibility = (version, dbVersion)=>{
+    version = (version+'').split('.');
+    dbVersion = (dbVersion+'').split('.');
+    if(version[0]==dbVersion[0] && version[1]==dbVersion[1])
+        return true;
+    else
+        return false;
+}

@@ -19,8 +19,10 @@ $(document).ready(()=>{
                             </div>
                         </div>
                         <div class="container text-center" style="width:100%">
-                            <button class="btn btn-secondary" id="editGroup" onclick="createGroup()">Save</button>
-                            <button class="btn btn-secondary" id="cancel" onclick="cancelNewGroup()">Cancel</button>
+                            <button class="btn btn-outline-secondary" id="editGroup" onclick="createGroup()">
+                                <i class="fa fa-save"></i> Save</button>
+                            <button class="btn btn-outline-secondary" id="cancel" onclick="cancelNewGroup()">
+                                <i class="fa fa-close"></i> Cancel</button>
                         </div>`;
     $('#contentDiv').html(resultHTML);
 })

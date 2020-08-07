@@ -59,7 +59,8 @@ $(document).ready(()=>{
                                     </div>
                                 </div>
                                 <div class="container text-center" style="width:100%">
-                                    <button class="btn btn-secondary" id="editGroup" onclick="createValuation()">Save Changes & View Closing Stock</button>
+                                    <button class="btn btn-outline-secondary" id="editGroup" onclick="createValuation()">
+                                        <i class="fa fa-save"></i> Save Changes & View Closing Stock</button>
                                 </div>`;
                 $('#contentDiv').html(resultHTML);
 

@@ -59,8 +59,10 @@ $(document).ready(()=>{
                                 </div>
                             </div>
                             <div class="container text-center" style="width:100%">
-                                <button class="btn btn-secondary" onclick="createItem()">Save</button>
-                                <button class="btn btn-secondary" id="cancel" onclick="cancelDialog()">Cancel</button>
+                                <button class="btn btn-outline-secondary" onclick="createItem()">
+                                    <i class="fa fa-save"></i> Save</button>
+                                <button class="btn btn-outline-secondary" id="cancel" onclick="cancelDialog()">
+                                    <i class="fa fa-close"></i> Cancel</button>
                             </div>`;
                     $('#contentDiv').html(resultHTML);
         }

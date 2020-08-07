@@ -35,8 +35,10 @@ $(document).ready(()=>{
                                 </div>
                                 <div class="container text-center" style="width:100%">
                                     <input type="hidden" name="groupID" id="groupID" value="${groupID}" />
-                                    <button class="btn btn-secondary" id="editGroup" onclick="editGroup(${groupID})">Edit</button>
-                                    <button class="btn btn-secondary" id="cancelButton" onclick="cancelDialog()">Cancel</button>
+                                    <button class="btn btn-outline-secondary" id="editGroup" onclick="editGroup(${groupID})">
+                                        <i class="fa fa-edit"></i> Edit</button>
+                                    <button class="btn btn-outline-secondary" id="cancelButton" onclick="cancelDialog()">
+                                        <i class="fa fa-close"></i> Cancel</button>
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }

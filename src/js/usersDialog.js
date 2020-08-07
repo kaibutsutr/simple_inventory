@@ -64,8 +64,10 @@ $(document).ready(()=>{
                                     </div>
                                     <div class="container text-center" style="width:100%">
                                         <input type="hidden" id="oldUsername" value="${result[0].username}" />
-                                        <button class="btn btn-secondary" id="editUOM" onclick="editUserSave(${userID})">Save</button>
-                                        <button class="btn btn-secondary" id="cancel" onclick="cancelDialog()">Cancel</button>
+                                        <button class="btn btn-outline-secondary" id="editUOM" onclick="editUserSave(${userID})">
+                                            <i class="fa fa-save"></i> Save</button>
+                                        <button class="btn btn-outline-secondary" id="cancel" onclick="cancelDialog()">
+                                            <i class="fa fa-close"></i> Cancel</button>
                                     </div>`;
 
                     $('#contentDiv').html(resultHTML);
