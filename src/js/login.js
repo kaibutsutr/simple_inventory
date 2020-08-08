@@ -7,6 +7,7 @@ const session = remote.session;
 const app = remote.app;
 const path = require('path');
 const appPath = app.getAppPath();
+const userPath = app.getPath('userData');
 
 const commonModule = require(path.join(appPath,'src','modules','commonModule.js'));
 const usersModule = require(path.join(appPath,'src','modules','usersModule.js'));
@@ -26,7 +27,7 @@ commonModule.checkLoggedIn((err, user)=>{
 $(document).ready(()=>{
 
     let db = require('electron').remote.getGlobal('sharedObject').db;
-
+    console.log(db);
     let firstTimeUse = false;
     if(db=='') {
         // Move skeleton.db from /src/db/skeleton.db to userData folder
@@ -75,7 +76,7 @@ $(document).ready(()=>{
                         remote.getGlobal('sharedObject').db = db;
                         let userSettings = remote.getGlobal('sharedObject');
                         
-                        fs.writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
+                        fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
                         ipcRenderer.send('redirect-window', 'index.html', []);
 
                     } else {

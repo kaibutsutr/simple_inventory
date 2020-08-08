@@ -7,6 +7,7 @@ exports.loadSideMenu = function(currentPage, callback) {
     switch(currentPage) {
         case 'index.html':
         case 'inventoryTransactions.html':
+        case 'transactionReports.html':
             mainPage = 'inventory';
             break;
         case 'groups.html':
@@ -45,6 +46,9 @@ exports.loadSideMenu = function(currentPage, callback) {
                                 </li>
                                 <li `+((currentPage=='inventoryTransactions.html') ? `class="active"` : ``)+`>
                                     <a href="inventoryTransactions.html"><i class="fa fa-arrows-h"></i> Inventory Transactions</a>
+                                </li>
+                                <li `+((currentPage=='transactionReports.html') ? `class="active"` : ``)+`>
+                                    <a href="transactionReports.html"><i class="fa fa-file-excel-o"></i> Transaction Reports</a>
                                 </li>
                             </ul>
                         </li>
@@ -344,4 +348,12 @@ exports.getDefaultDBPath = ()=>{
         fs.mkdirSync(dbPath);
     }
     return dbPath;
+}
+
+exports.getObjectFromDBRow = (rows)=>{
+    let result = {};
+    for(let i in rows) {
+        result[rows[i].id] = rows[i];
+    }
+    return result;
 }

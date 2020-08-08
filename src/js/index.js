@@ -41,6 +41,7 @@ $(document).ready(()=>{
             }
 
             let resultHTML = `<h4><i class="fa fa-university"></i> Current Inventory</h4>
+                                <h6><span class="badge badge-primary">Please select an item below to view transactions</span></h6>
                                 <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>

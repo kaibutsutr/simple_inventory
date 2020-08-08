@@ -26,6 +26,7 @@ $(document).ready(()=>{
             }
 
             let resultHTML = `<h4><i class="fa fa-arrows-h"></i> Inventory Transactions</h4>
+                                <h6><span class="badge badge-primary">Please select an item below to view transactions</span></h6>
                                 <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>

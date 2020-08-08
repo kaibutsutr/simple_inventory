@@ -1,5 +1,6 @@
 const fs = require('fs');
 const appPath = require('electron').remote.app.getAppPath();
+const userPath = require('electron').remote.app.getPath('userData');
 
 const path = require('path');
 const ipcRenderer = require('electron').ipcRenderer;
@@ -43,7 +44,7 @@ function createDB() {
             // Set DB
             require('electron').remote.getGlobal('sharedObject').db = path.join(dbFolder,dbName);
             let userSettings = require('electron').remote.getGlobal('sharedObject');
-            fs.writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
+            fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
 
             alert('Successfully created new Database!\nPlease sign in for first time with admin / pass@1234');
             ipcRenderer.send('redirect-window', 'logout.html', []);

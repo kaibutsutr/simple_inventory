@@ -1,5 +1,4 @@
 const {app, BrowserWindow, ipcMain, Menu} = require('electron');
-const url = require('url');
 const path = require('path');
 const appPath = app.getAppPath();
 const fs = require('fs');
@@ -8,6 +7,7 @@ var win;
 var dialogWindow;
 var paramsMain;
 var version;
+var userPath = app.getPath('userData');
 
 // Menu
 const menuTemplate = [{
@@ -47,10 +47,21 @@ app.on('ready', ()=>{
         app.quit();
     }
 
+    // Check if running for first time
+    let userSettingsPath = path.join(userPath, 'misc');
+    if(!fs.existsSync(userSettingsPath)) {
+        fs.mkdirSync(userSettingsPath);
+    }
+    userSettingsPath = path.join(userSettingsPath, 'userSettings');
+    let defaultUserSettingsPath = path.join(appPath, 'src', 'misc', 'userSettings');
+    if(!fs.existsSync(userSettingsPath)) {
+        fs.copyFileSync(defaultUserSettingsPath, userSettingsPath);
+    }
+
     // Load userSettings
     let userSettings;
     try {
-        userSettings = fs.readFileSync(path.join(appPath,'src','misc','userSettings'));
+        userSettings = fs.readFileSync(path.join(userPath,'misc','userSettings'));
         userSettings = JSON.parse(userSettings);
     } catch(e) {
         userSettings = {
@@ -59,7 +70,7 @@ app.on('ready', ()=>{
                             fontSize: 14
                         };
         // Write this usersettings to file
-        fs.writeFileSync(path.join(appPath,'src','misc','userSettings'), JSON.stringify(userSettings));
+        fs.writeFileSync(path.join(userPath,'misc','userSettings'), JSON.stringify(userSettings));
     }
     userSettings.version = version;
     global.sharedObject = userSettings;
