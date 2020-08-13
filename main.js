@@ -20,8 +20,8 @@ const menuTemplate = [{
     },
     {
        label: 'View',
-       submenu: [{role: 'reload'},{type: 'separator'},{role: 'togglefullscreen'}
-       ,{role: 'toggledevtools'}
+       submenu: [{role: 'reload'},{type: 'separator'},{role: 'togglefullscreen'},
+                // {role: 'toggledevtools'}
                 ]
     },
     {
