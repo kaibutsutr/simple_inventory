@@ -2,11 +2,21 @@ const ipcRenderer = require('electron').ipcRenderer;
 const remote = require('electron').remote;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
+
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 var uomID;
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('createUOM')) {
+        console.log('Permission granted: createUOM');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
+
 
     let additionalArgs = window.process.argv;
     for(let needle of additionalArgs) {
@@ -64,8 +74,8 @@ $(document).ready(()=>{
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }
-    });
-});
+    });    
+}
 
 function editUOM(uomID) {
     let tempWindow = remote.getCurrentWindow();

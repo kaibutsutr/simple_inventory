@@ -4,6 +4,7 @@ const appPath = require('electron').remote.app.getAppPath();
 const path = require('path');
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 $(document).ready(()=>{
 
@@ -12,6 +13,13 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    if(usersModule.checkPermission('viewInventoryTransactions', 'createGroup')) {
+        console.log('Permission granted: viewInventoryTransactions or createGroup');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
     inventoryModule.getGroups((err, result) => {
         if(err) {
             $('#contentDiv').html('Error fetching data!');
@@ -47,8 +55,8 @@ $(document).ready(()=>{
                     </table>`;
             $('#contentDiv').html(resultHTML);
         }
-    })
-});
+    })    
+}
 
 $(document).on("click","tr.groupRow", function(e){
     let groupID = commonModule.getRowID(e);

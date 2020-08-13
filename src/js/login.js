@@ -8,6 +8,9 @@ const app = remote.app;
 const path = require('path');
 const appPath = app.getAppPath();
 const userPath = app.getPath('userData');
+const util = require('util');
+const { selectQuery } = require('../modules/dbModule');
+const { usertypePermissions } = require('../modules/usersModule');
 
 const commonModule = require(path.join(appPath,'src','modules','commonModule.js'));
 const usersModule = require(path.join(appPath,'src','modules','usersModule.js'));
@@ -49,44 +52,76 @@ $(document).ready(()=>{
         $('#db').val(db);
     }
 
+    $(document).on('keypress',function(e) {
+        if(e.which == 13) {
+            login();
+        }
+    });
+
     $('#loginButton').on('click', ()=>{
-
-        let db = commonModule.getValidValue('db');
-        let username = commonModule.getValidValue('username');
-        let password = commonModule.getValidValue('password');
-        if(!username || !password)
-            return false;
-
-        usersModule.getUserByUsername(username, db, (err, result)=>{
-            if(err) {
-                console.log(err);
-                $('#resultDiv').html(err);
-            } else {
-                if(Object.keys(result).length===0) {
-                    $('#resultDiv').html('No such user!');
-                } else {
-                    let tempResult = result[0];
-                    if(commonModule.encryptPassword(password) == tempResult.password) {
-                        $('#resultDiv').html('success!');
-                        
-                        // Set session cookies & redirect to index.html
-                        session.defaultSession.cookies.set({url:SESSION_URL, name:'username', value:username});
-
-                        // Set DB
-                        remote.getGlobal('sharedObject').db = db;
-                        let userSettings = remote.getGlobal('sharedObject');
-                        
-                        fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
-                        ipcRenderer.send('redirect-window', 'index.html', []);
-
-                    } else {
-                        $('#resultDiv').html('failed!');
-                    }
-                }
-            }
-        })
+        login();
     })
 })
+
+function login() {
+    let db = commonModule.getValidValue('db');
+    let username = commonModule.getValidValue('username');
+    let password = commonModule.getValidValue('password');
+    if(!username || !password)
+        return false;
+
+    usersModule.getUserByUsername(username, db, (err, result)=>{
+        if(err) {
+            console.log(err);
+            $('#resultDiv').html(err);
+        } else {
+            if(Object.keys(result).length===0) {
+                $('#resultDiv').html('No such user!');
+            } else {
+                let tempResult = result[0];
+                if(commonModule.encryptPassword(password) == tempResult.password) {
+                    $('#resultDiv').html('success!');
+                    
+                    // Set session cookies & redirect to index.html
+                    session.defaultSession.cookies.set({url:SESSION_URL, name:'username', value:username});
+
+                    // Fetch usertype permissions
+                    let userPermissions = {};
+                    let getPermissions = util.promisify(usersModule.getPermissions);
+                    getPermissions(tempResult.usertypeID)
+                        .then((data)=>{
+                            for(let i in data) {
+                                userPermissions[data[i].usertypePermission] = data[i].usertypePermission;
+                            }
+                            remote.getGlobal('sharedObject').usertypeID = tempResult.usertypeID;
+                            remote.getGlobal('sharedObject').userPermissions = userPermissions;
+
+                            // Set DB
+                            remote.getGlobal('sharedObject').db = db;
+                            usersModule.getDBSettings((err, result)=>{
+                                if(!err) {
+                                    for(let i in result) {
+                                        if(result[i].property=='name')
+                                            remote.getGlobal('sharedObject').dbName = result[i].value;
+                                        if(result[i].property=='description')
+                                            remote.getGlobal('sharedObject').dbDescription = result[i].value;
+                                    }
+                                }
+                                let userSettings = remote.getGlobal('sharedObject');
+                                console.log(userSettings);
+                                fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
+                                ipcRenderer.send('redirect-window', 'index.html', []);
+                            });
+                            
+                    });
+
+                } else {
+                    $('#resultDiv').html('failed!');
+                }
+            }
+        }
+    })    
+}
 
 function selectDB() {
     let defaultPath = commonModule.getDefaultDBPath();

@@ -4,11 +4,18 @@ const remote = require('electron').remote;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 var itemID;
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('createItem')) {
+        console.log('Permission granted: createItem');
+        mainStuff();
+    }
+});
 
+function mainStuff() {
     let additionalArgs = window.process.argv;
     for(let needle of additionalArgs) {
         if(needle.search('id=')===0) {
@@ -68,8 +75,8 @@ $(document).ready(()=>{
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }
-    });
-});
+    });    
+}
 
 function editItem(groupID) {
     let tempWindow = remote.getCurrentWindow();

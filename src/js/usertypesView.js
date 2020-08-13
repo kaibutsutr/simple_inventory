@@ -1,6 +1,7 @@
 const ipcRenderer = require('electron').ipcRenderer;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
+
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
@@ -10,7 +11,14 @@ $(document).ready(()=>{
     commonModule.loadSideMenu('usertypes.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
+    
+    if(usersModule.checkPermission('createUsertypes')) {
+        console.log('Permission granted: createUsertypes');
+        mainStuff();
+    }
+});
 
+function mainStuff() {
     ipcRenderer.send('variable-request');
 
     ipcRenderer.on('variable-reply', function (event, args) {
@@ -67,8 +75,8 @@ $(document).ready(()=>{
                 $('#usersDiv').html(resultHTML);
             }
         })
-    })
-});
+    })    
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);

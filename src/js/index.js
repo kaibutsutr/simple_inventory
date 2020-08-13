@@ -23,6 +23,8 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    console.log('Permission granted for all users');
+
     // Load username & DB name & font-size
     $('#usernameButtonSpan').html(username);
     $('#dbButtonSpan').html(dbName);

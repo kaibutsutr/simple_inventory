@@ -4,6 +4,7 @@ const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 $(document).ready(()=>{
 
@@ -11,6 +12,16 @@ $(document).ready(()=>{
     commonModule.loadSideMenu('inventoryTransactions.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
+
+    // Check permission
+    if(!usersModule.checkPermission('viewInventoryTransactions')) {
+        $('#contentDiv').html('No permission');
+    } else {
+        mainStuff();
+    }
+});
+
+function mainStuff() {
 
     inventoryModule.getCurrentInventory(function(err, result) {
         if(err) {
@@ -72,7 +83,7 @@ $(document).ready(()=>{
             $('#contentDiv').html(resultHTML);
         }
     });
-});
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);

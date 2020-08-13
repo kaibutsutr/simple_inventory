@@ -3,6 +3,7 @@ const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 $(document).ready(()=>{
 
@@ -11,6 +12,13 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    if(usersModule.checkPermission('viewInventoryTransactions', 'createUOM')) {
+        console.log('Permission granted: viewInventoryTransactions or createUOM');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
     inventoryModule.getUOMs((err, result) => {
         if(err) {
             $('#contentDiv').html('Error fetching data!');
@@ -52,8 +60,8 @@ $(document).ready(()=>{
                     </table>`;
             $('#contentDiv').html(resultHTML);
         }
-    });
-});
+    });    
+}
 
 $(document).on("click","tr.uomRow", function(e){
     let uomID = commonModule.getRowID(e);

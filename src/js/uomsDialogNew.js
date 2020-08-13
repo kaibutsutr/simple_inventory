@@ -1,13 +1,21 @@
 const remote = require('electron').remote;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
+
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 var groupID;
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('createUOM')) {
+        console.log('Permission granted: createUOM');
+        mainStuff();
+    }
+})
 
+function mainStuff() {
     let resultHTML = `<div class="form-group row text-center" style="width:100%;">
                             <div class="text-center col-md-12 col-lg-12"><b>New UOM</b></div>
                         </div>
@@ -49,9 +57,8 @@ $(document).ready(()=>{
                             <button class="btn btn-outline-secondary" id="cancel" onclick="cancelDialog()">
                                 <i class="fa fa-close"></i> Cancel</button>
                         </div>`;
-    $('#contentDiv').html(resultHTML);
-
-})
+    $('#contentDiv').html(resultHTML);    
+}
 
 function createUOM() {
     let name = commonModule.getValidValue('uomName');

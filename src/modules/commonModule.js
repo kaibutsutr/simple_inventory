@@ -1,5 +1,6 @@
 const moment = require('moment');
 const md5 = require('md5');
+const thisUsersModule = require('./usersModule');
 
 exports.loadSideMenu = function(currentPage, callback) {
     
@@ -43,75 +44,103 @@ exports.loadSideMenu = function(currentPage, callback) {
                                         <i class="fa fa-university"></i>
                                         Current Inventory
                                     </a>
-                                </li>
-                                <li `+((currentPage=='inventoryTransactions.html') ? `class="active"` : ``)+`>
-                                    <a href="inventoryTransactions.html"><i class="fa fa-arrows-h"></i> Inventory Transactions</a>
-                                </li>
-                                <li `+((currentPage=='transactionReports.html') ? `class="active"` : ``)+`>
-                                    <a href="transactionReports.html"><i class="fa fa-file-excel-o"></i> Transaction Reports</a>
-                                </li>
-                            </ul>
+                                </li>`;
+
+    if(thisUsersModule.checkPermission('viewInventoryTransactions'))
+        resultHTML +=              `<li `+((currentPage=='inventoryTransactions.html') ? `class="active"` : ``)+`>
+                                        <a href="inventoryTransactions.html"><i class="fa fa-arrows-h"></i> Inventory Transactions</a>
+                                    </li>
+                                    <li `+((currentPage=='transactionReports.html') ? `class="active"` : ``)+`>
+                                        <a href="transactionReports.html"><i class="fa fa-file-excel-o"></i> Transaction Reports</a>
+                                    </li>`;
+                               
+    resultHTML +=          `</ul>
                         </li>
                         <li>
                             <a href="#masterMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <i class="fa fa-cogs"></i> Inventory Master
                             </a>
-                            <ul class="collapse `+((mainPage=='inventoryMaster') ? `show` : ``)+` list-unstyled" id="masterMenu">
-                                <li `+((currentPage=='groups.html') ? `class="active"` : ``)+`>
-                                    <a href="groups.html"><i class="fa fa-folder-open"></i> Groups</a>
-                                </li>
-                                <li `+((currentPage=='subgroups.html') ? `class="active"` : ``)+`>
-                                    <a href="subgroups.html"><i class="fa fa-dot-circle-o"></i> Subgroups</a>
-                                </li>
-                                <li `+((currentPage=='items.html') ? `class="active"` : ``)+`>
-                                    <a href="items.html"><i class="fa fa-file"></i> Items</a>
-                                </li>
-                                <li `+((currentPage=='uom.html') ? `class="active"` : ``)+`>
-                                    <a href="uom.html"><i class="fa fa-balance-scale"></i> UOM</a>
-                                </li>
-                            </ul>
+                            <ul class="collapse `+((mainPage=='inventoryMaster') ? `show` : ``)+` list-unstyled" id="masterMenu">`;
+
+    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createGroup'))
+        resultHTML +=              `<li `+((currentPage=='groups.html') ? `class="active"` : ``)+`>
+                                        <a href="groups.html"><i class="fa fa-folder-open"></i> Groups</a>
+                                    </li>`;
+
+    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createSubGroup'))
+        resultHTML +=              `<li `+((currentPage=='subgroups.html') ? `class="active"` : ``)+`>
+                                        <a href="subgroups.html"><i class="fa fa-dot-circle-o"></i> Subgroups</a>
+                                    </li>`;
+
+    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createItem'))                      
+        resultHTML +=              `<li `+((currentPage=='items.html') ? `class="active"` : ``)+`>
+                                        <a href="items.html"><i class="fa fa-file"></i> Items</a>
+                                    </li>`;
+
+    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createUOM'))   
+        resultHTML +=              `<li `+((currentPage=='uom.html') ? `class="active"` : ``)+`>
+                                        <a href="uom.html"><i class="fa fa-balance-scale"></i> UOM</a>
+                                    </li>`;
+
+    resultHTML +=           `</ul>
                         </li>
                         <li>
                             <a href="#valuationsMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <i class="fa fa-usd"></i> Valuations
                             </a>
-                            <ul class="collapse `+((mainPage=='valuations') ? `show` : ``)+` list-unstyled" id="valuationsMenu">
-                                <li `+((currentPage=='valuations.html') ? `class="active"` : ``)+`>
-                                    <a href="valuations.html"><i class="fa fa-usd"></i> Saved Valuations</a>
-                                </li>
-                                <li `+((currentPage=='valuationsNew.html') ? `class="active"` : ``)+`>
-                                    <a href="valuationsNew.html"><i class="fa fa-viacoin"></i> New Valuation</a>
-                                </li>
-                            </ul>
+                            <ul class="collapse `+((mainPage=='valuations') ? `show` : ``)+` list-unstyled" id="valuationsMenu">`;
+
+    if(thisUsersModule.checkPermission('viewValuations', 'createValuations'))   
+        resultHTML +=              `<li `+((currentPage=='valuations.html') ? `class="active"` : ``)+`>
+                                        <a href="valuations.html"><i class="fa fa-usd"></i> Saved Valuations</a>
+                                    </li>`;
+
+    if(thisUsersModule.checkPermission('createValuations'))   
+        resultHTML +=               `<li `+((currentPage=='valuationsNew.html') ? `class="active"` : ``)+`>
+                                        <a href="valuationsNew.html"><i class="fa fa-viacoin"></i> New Valuation</a>
+                                    </li>`;
+
+    resultHTML +=           `</ul>
                         </li>
                         <li>
                             <a href="#usersMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <i class="fa fa-user"></i> Users
                             </a>
-                            <ul class="collapse `+((mainPage=='users') ? `show` : ``)+` list-unstyled" id="usersMenu">
-                                <li `+((currentPage=='users.html') ? `class="active"` : ``)+`>
-                                    <a href="users.html"><i class="fa fa-user"></i> Users</a>
-                                </li>
-                                <li `+((currentPage=='usertypes.html') ? `class="active"` : ``)+`>
-                                    <a href="usertypes.html"><i class="fa fa-users"></i> Usertypes</a>
-                                </li>
-                            </ul>
+                            <ul class="collapse `+((mainPage=='users') ? `show` : ``)+` list-unstyled" id="usersMenu">`;
+
+    if(thisUsersModule.checkPermission('viewUsers', 'createUsers'))   
+        resultHTML +=               `<li `+((currentPage=='users.html') ? `class="active"` : ``)+`>
+                                        <a href="users.html"><i class="fa fa-user"></i> Users</a>
+                                    </li>`;
+
+    if(thisUsersModule.checkPermission('viewUsertypes', 'createUsertypes'))   
+        resultHTML +=               `<li `+((currentPage=='usertypes.html') ? `class="active"` : ``)+`>
+                                        <a href="usertypes.html"><i class="fa fa-users"></i> Usertypes</a>
+                                    </li>`;
+
+    resultHTML +=           `</ul>
                         </li>
                         <li>
                             <a href="#accountMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                                 <i class="fa fa-universal-access"></i> My Settings
                             </a>
-                            <ul class="collapse `+((mainPage=='myAccount') ? `show` : ``)+` list-unstyled" id="accountMenu">
-                                <li `+((currentPage=='dbSettings.html') ? `class="active"` : ``)+`>
-                                    <a href="dbSettings.html"><i class="fa fa-cog"></i> DB Settings</a>
-                                </li>
-                                <li `+((currentPage=='userSettings.html') ? `class="active"` : ``)+`>
+                            <ul class="collapse `+((mainPage=='myAccount') ? `show` : ``)+` list-unstyled" id="accountMenu">`;
+
+    if(thisUsersModule.getUsertype()===1)
+        resultHTML +=               `<li `+((currentPage=='dbSettings.html') ? `class="active"` : ``)+`>
+                                        <a href="dbSettings.html"><i class="fa fa-cog"></i> DB Settings</a>
+                                    </li>`;
+
+    resultHTML +=               `<li `+((currentPage=='userSettings.html') ? `class="active"` : ``)+`>
                                     <a href="userSettings.html"><i class="fa fa-user"></i> User Settings</a>
-                                </li>
-                                <li `+((currentPage=='createDB.html') ? `class="active"` : ``)+`>
-                                    <a href="createDB.html"><i class="fa fa-database"></i> Create DB</a>
-                                </li>
-                                <li `+((currentPage=='logout.html') ? `class="active"` : ``)+`>
+                                </li>`;
+    
+    if(thisUsersModule.getUsertype()===1)
+        resultHTML +=               `<li `+((currentPage=='createDB.html') ? `class="active"` : ``)+`>
+                                        <a href="createDB.html"><i class="fa fa-database"></i> Create DB</a>
+                                    </li>`;
+
+    resultHTML +=               `<li `+((currentPage=='logout.html') ? `class="active"` : ``)+`>
                                     <a href="logout.html"><i class="fa fa-power-off"></i> Logout</a>
                                 </li>
                             </ul>
@@ -304,10 +333,20 @@ exports.getQuickMenu = (callback)=>{
 
         let resultHTML = '';
         let db = require('electron').remote.getGlobal('sharedObject').db;
-        db = '...'+db.substr(db.length - 20);
+        let dbName = require('electron').remote.getGlobal('sharedObject').dbName;
+        let dbDescription = require('electron').remote.getGlobal('sharedObject').dbDescription;
+
+        let maxLength = db.length;
+        if(maxLength<50)
+            maxLength = 50;
+        let smallDB = '...'+db.substr(maxLength - 20);
         resultHTML += `<div class="d-flex p-2">
                             <div class="p-2 border">Logged in: <b>${username}</b></div>
-                            <div class="p-2 border">DB: <b>${db}</b></div>
+                            <div class="p-2 border">DB: <b>${smallDB}</b> 
+                                <span data-toggle="tooltip" data-html="true" title="<div style=text-align:left>DB: <b>${smallDB}</b><br />Name: <b>${dbName}</b></div>">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                </span>
+                            </div>
                             <div class="p-2 border"><i class="fa fa-power-off"></i> <a href="logout.html">Logout</a></div>
                         </div>`;
         callback('', resultHTML);
@@ -350,10 +389,49 @@ exports.getDefaultDBPath = ()=>{
     return dbPath;
 }
 
+exports.getDefaultExportPath = ()=>{
+    let exportPath = require('path').join(app.getPath('home'), 'SimpleInventory');
+    if(!fs.existsSync(exportPath)) {
+        fs.mkdirSync(exportPath);
+    }
+    exportPath = require('path').join(exportPath, 'exports');
+    if(!fs.existsSync(exportPath)) {
+        fs.mkdirSync(exportPath);
+    }
+    return exportPath;
+}
+
 exports.getObjectFromDBRow = (rows)=>{
     let result = {};
     for(let i in rows) {
         result[rows[i].id] = rows[i];
     }
     return result;
+}
+
+exports.exportPDF = (fileName)=>{
+    $('.printButton').hide();
+    fileName += moment().format('_YYYY_MM_DD-HH_mm_ss');
+    fileName += '.pdf';
+    ipcRenderer.send('print-window-pdf', fileName);
+
+    ipcRenderer.on('print-window-pdf-reply', ()=>{
+        require('electron').remote.getCurrentWindow()
+            .close();
+    });
+}
+
+exports.printPage = ()=>{
+    $('.printButton').hide();
+    ipcRenderer.send('print-window');
+
+    ipcRenderer.on('print-window-reply', (event, args)=>{
+        if(args.success==true) {
+            console.log('Print successful');
+        } else {
+            alert(args.error);
+        }
+        require('electron').remote.getCurrentWindow()
+            .close();
+    });
 }

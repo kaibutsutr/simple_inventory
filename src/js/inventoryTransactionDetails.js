@@ -4,12 +4,26 @@ const moment = require('moment');
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
 
 var itemID;
 var month;
 
 $(document).ready(()=>{
+
+    // Load side menu
+    commonModule.loadSideMenu('inventoryTransactions.html', (err, html)=>{
+        $('#menuHolder').html(html);
+    });
+
+    if(usersModule.checkPermission('viewInventoryTransactions')) {
+        console.log('Permission granted: viewInventoryTransactions');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
 
     ipcRenderer.send('variable-request');
 
@@ -163,13 +177,8 @@ $(document).ready(()=>{
                 })
             }
         });
-    });
-
-    // Load side menu
-    commonModule.loadSideMenu('inventoryTransactions.html', (err, html)=>{
-        $('#menuHolder').html(html);
-    });
-});
+    });    
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);

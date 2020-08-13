@@ -1,11 +1,18 @@
 const remote = require('electron').remote;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
+
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('createUsers')) {
+        console.log('Permission granted: createUsers');
+        mainStuff();
+    }
+})
 
+function mainStuff() {
     usersModule.getUsertypes((err, rows)=>{
         if(err) {
             $('contentDiv').html('Error fetching data!');
@@ -59,9 +66,8 @@ $(document).ready(()=>{
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }
-    })
-
-})
+    })    
+}
 
 function createUser() {
     let username = commonModule.getValidValue('username');

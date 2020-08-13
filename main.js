@@ -39,6 +39,16 @@ const menu = Menu.buildFromTemplate(menuTemplate);
 Menu.setApplicationMenu(menu);
 
 app.on('ready', ()=>{
+
+    // ****************
+    // Test script begins
+    // let usersModule = require('./src/modules/usersModule.js');
+    // usersModule.getPermissions(1, (err, result)=>{
+    //     console.log(result);
+    // });
+    // Test script ends
+    // ****************
+
     // Load version
     try {
         version = fs.readFileSync(path.join(appPath,'src', 'misc', 'version'));
@@ -164,3 +174,47 @@ function showAboutDialog() {
     aboutDialog.setMenuBarVisibility(false);
     aboutDialog.setAlwaysOnTop(true);
 }
+
+ipcMain.on('print-window-pdf', function(event, fileName, arg) {
+
+    let exportPath = path.join(app.getPath('home'), 'SimpleInventory');
+    if(!fs.existsSync(exportPath)) {
+        fs.mkdirSync(exportPath);
+    }
+    exportPath = path.join(exportPath, 'exports');
+    if(!fs.existsSync(exportPath)) {
+        fs.mkdirSync(exportPath);
+    }
+    
+    dialogWindow.webContents.printToPDF({}).then(data => {
+        exportPath += '/'+fileName;
+
+        fs.writeFile(exportPath, data, (error) => {
+            if(error)
+                console.log('Write PDF successfully to '+exportPath);
+            else
+                require('electron').shell.showItemInFolder(exportPath);
+        });
+
+        event.sender.send('print-window-reply', paramsMain);
+    });
+});
+
+ipcMain.on('print-window', function(event, arg) {
+    // let printers = dialogWindow.webContents.getPrinters();
+    // console.log(printers);
+
+    dialogWindow.setAlwaysOnTop(false);
+    const options = { silent: false }
+    let printSuccess = true;
+    let error = '';
+    dialogWindow.webContents.print(options, (success, errorType) => {
+        if (!success) {
+            error = errorType;
+            printSuccess = false;
+        }
+
+        dialogWindow.setAlwaysOnTop(true);
+        event.sender.send('print-window-reply', {success: printSuccess, error: error});
+    })
+});

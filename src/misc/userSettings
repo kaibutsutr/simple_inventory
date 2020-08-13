@@ -1,1 +1,1 @@
-{"sessionURL":"http://localhost/","db":"/home/jacob/SimpleInventory/databases/firstDB.db","fontSize":14,"version":{"type":"Buffer","data":[49,46,48,46,48,10]}}
+{"sessionURL":"http://localhost/","db":"/home/jacob/SimpleInventory/databases/firstDB.db","fontSize":14,"version":{"type":"Buffer","data":[49,46,48,46,48,10]},"userPermissions":{"createUsertypes":"createUsertypes"},"usertypeID":2}

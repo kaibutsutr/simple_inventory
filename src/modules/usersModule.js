@@ -192,7 +192,7 @@ exports.getDBSettings = (callback)=>{
         if(err) {
             callback(err);
         } else {
-            console.log(result);
+            // console.log(result);
             callback('', result);
         }
     });
@@ -216,4 +216,31 @@ exports.saveDBSettings = (name, description, callback)=>{
         }
     });
 
+}
+
+exports.getPermissions = (usertypeID, callback)=>{
+    dbModule.selectQuery(`SELECT * FROM usertypePermissions WHERE usertypeID = '${usertypeID}'`, (err, result) => {
+        if(err) {
+            callback(err);
+        } else {
+            callback('', result);
+        }
+    });
+}
+
+exports.checkPermission = (permission1, permission2='', permission3='')=>{
+    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    // console.log(userSettings);
+    let userPermissions = Object.keys(userSettings.userPermissions);
+    if(userPermissions.indexOf(permission1)!==-1 || userPermissions.indexOf(permission2)!==-1 || userPermissions.indexOf(permission3)!==-1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+exports.getUsertype = ()=>{
+    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    // console.log(userSettings);
+    return userSettings.usertypeID;
 }

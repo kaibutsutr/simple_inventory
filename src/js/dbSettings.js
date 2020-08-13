@@ -10,7 +10,14 @@ $(document).ready(()=>{
     commonModule.loadSideMenu('dbSettings.html', (err, html)=>{
         $('#menuHolder').html(html);
     });
+    
+    if(usersModule.getUsertype()===1) {
+        console.log('Permission granted: super (usertype)');
+        mainStuff();
+    }
+});
 
+function mainStuff() {
     usersModule.getDBSettings((err, result)=>{
         if(err) {
             $('contentDiv').html('Could not load data!');
@@ -56,8 +63,8 @@ $(document).ready(()=>{
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }
-    })
-});
+    })    
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);

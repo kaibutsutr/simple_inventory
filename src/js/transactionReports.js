@@ -3,6 +3,7 @@ const ipcRenderer = require('electron').ipcRenderer;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
 
 var itemsOptions = {};
@@ -14,6 +15,13 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    if(usersModule.checkPermission('viewInventoryTransactions')) {
+        console.log('Permission granted: viewInventoryTransactions');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
     inventoryModule.getItems((err, result)=>{
         if(err) {
             console.log(err);
@@ -37,7 +45,6 @@ $(document).ready(()=>{
                     }
                 }
             }
-            console.log(itemsOptions);
 
             let resultHTML = `<h3>Transaction Reports</h3>
                                 
@@ -101,8 +108,8 @@ $(document).ready(()=>{
                 format: 'd-m-Y'
             });
         }
-    })
-});
+    })    
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);

@@ -16,6 +16,10 @@ $(document).ready(()=>{
             $('#quickMenuHolder').html('Error fetching data');
         } else {
             $('#quickMenuHolder').html(data);
+
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
         }
     })
 

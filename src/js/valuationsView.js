@@ -2,8 +2,10 @@ const ipcRenderer = require('electron').ipcRenderer;
 const moment = require('moment');
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
+
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 let username;
 
@@ -14,6 +16,13 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    if(usersModule.checkPermission('viewValuations', 'createValuations')) {
+        console.log('Permission granted: viewValuations or createValuations');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
     ipcRenderer.send('variable-request');
 
     ipcRenderer.on('variable-reply', function (event, args) {
@@ -101,8 +110,8 @@ $(document).ready(()=>{
             $('#contentDiv').html(resultHTML);
             
         })
-    })
-});
+    })    
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);

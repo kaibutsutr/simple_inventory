@@ -5,6 +5,7 @@ const moment = require('moment');
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
 
 var itemID, receipt, itemName, month;
@@ -19,6 +20,13 @@ commonModule.checkLoggedIn((err, user)=>{
 })
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('performInventoryTransactions')) {
+        console.log('Permission granted: performInventoryTransactions');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
 
     let additionalArgs = window.process.argv;
     for(let needle of additionalArgs) {
@@ -102,15 +110,17 @@ $(document).ready(()=>{
                             </div>
                         </div>
                         <div class="container text-center" style="width:100%">
-                            <button class="btn btn-secondary" id="editGroup" onclick="newTransaction(${itemID})">Save</button>
-                            <button class="btn btn-secondary" id="cancel" onclick="cancelDialog()">Cancel</button>
+                            <button class="btn btn-outline-secondary" id="editGroup" onclick="newTransaction(${itemID})">
+                                <i class="fa fa-save"></i> Save</button>
+                            <button class="btn btn-outline-secondary" id="cancel" onclick="cancelDialog()">
+                                <i class="fa fa-close"></i> Cancel</button>
                         </div>`;
     $('#contentDiv').html(resultHTML);
     $('#date').datetimepicker({
         timepicker: true,
         format: 'd-m-Y H:i'
-    });
-});
+    });    
+}
 
 function cancelDialog() {
     remote.getCurrentWindow()

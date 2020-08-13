@@ -4,9 +4,16 @@ const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('createGroup')) {
+        console.log('Permission granted: createGroup');
+        mainStuff();
+    }
+})
 
+function mainStuff() {
     let resultHTML = `<div class="form-group row text-center" style="width:100%;">
                             <div class="text-center col-md-12 col-lg-12"><b>New Group</b></div>
                         </div>
@@ -24,8 +31,8 @@ $(document).ready(()=>{
                             <button class="btn btn-outline-secondary" id="cancel" onclick="cancelNewGroup()">
                                 <i class="fa fa-close"></i> Cancel</button>
                         </div>`;
-    $('#contentDiv').html(resultHTML);
-})
+    $('#contentDiv').html(resultHTML);    
+}
 
 function createGroup() {
     let groupName = commonModule.getValidValue('groupName');

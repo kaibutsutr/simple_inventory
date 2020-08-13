@@ -1,12 +1,17 @@
 const ipcRenderer = require('electron').ipcRenderer;
 
 const path = require('path');
+const app = require('electron').remote.app;
+const fs = require('fs');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
+const excelModule = require(path.join(appPath, 'src', 'modules', 'excelModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
 const moment = require('moment');
 
 var startDate, endDate, itemID;
+var groupName, subgroupName;
 
 $(document).ready(()=>{
 
@@ -15,6 +20,13 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    if(usersModule.checkPermission('viewInventoryTransactions')) {
+        console.log('Permission granted: viewInventoryTransactions');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
     ipcRenderer.send('variable-request');
 
     ipcRenderer.on('variable-reply', function (event, args) {
@@ -45,6 +57,15 @@ $(document).ready(()=>{
                                             </button>
                                             <button class="btn btn-outline-secondary" id="issueButton">
                                                 <i class="fa fa-minus-circle"></i> Issue
+                                            </button>
+                                            <button class="btn btn-outline-secondary" id="pdfButton">
+                                                <i class="fa fa-file-pdf-o"></i> PDF
+                                            </button>
+                                            <button class="btn btn-outline-secondary" id="printButton">
+                                                <i class="fa fa-print"></i> Print
+                                            </button>
+                                            <button class="btn btn-outline-secondary" id="excelButton">
+                                                <i class="fa fa-file-excel-o"></i> Export to Excel
                                             </button>
                                         </div>
                                         <br />
@@ -120,12 +141,29 @@ $(document).ready(()=>{
                     $('#issueButton').on('click', (e)=>{
                         ipcRenderer.send('open-new-window', 'inventoryTransactionDialogNew.html', ['id='+itemID,'receipt='+false, 'itemName='+uom.itemName, 'month='+startDate.format('YYYY-MM-DD')]);
                     })
+
+                    // PDF button
+                    $('#pdfButton').on('click', (e)=>{
+                        ipcRenderer.send('open-new-window', 'transactionReportsPDF.html', ['id='+itemID,'receipt='+true, 'itemName='+uom.itemName, 'month='+startDate.format('YYYY-MM-DD')]);
+                    })
+
+                    // Print button
+                    $('#printButton').on('click', (e)=>{
+                        ipcRenderer.send('open-new-window', 'transactionReportsPDF.html', ['id='+itemID,'receipt='+true, 'itemName='+uom.itemName, 'month='+startDate.format('YYYY-MM-DD')]);
+                    })
+
+                    // Print button
+                    $('#excelButton').on('click', (e)=>{
+                        exportToExcel();                        
+                    })
     
                     // Load itemGroupDetails
                     inventoryModule.getSubgroup(uom.subgroupID, (err, result)=>{
                         if(err) {
                             $('#itemGroupDetails').html('Error loading data!');
                         } else {
+                            groupName = result[0].groupName;
+                            subgroupName = result[0].name;
                             let tempHTML = `Subgroup: <b>${result[0].name}</b>
                                             <br />Group: <b>${result[0].groupName}</b>
                                             <br />`;
@@ -136,6 +174,120 @@ $(document).ready(()=>{
             });
         }
     });      
+}
+
+function exportToExcel() {
+    inventoryModule.getItemTransactionDetails(itemID, startDate.unix(), endDate.unix(), (err, result)=>{
+        if(err) {
+            console.error(err);
+            $('#contentDiv').html('Error loading data!');
+        } else {
+            let openingStock = result[0][0].openingStock;
+            if(!openingStock)
+                openingStock = 0;
+            let closingStock = openingStock;
+            let transactions = result[1];
+            let uom = result[2][0];
+
+            let xl = require('excel4node');
+            var wb = new xl.Workbook();
+            var ws = wb.addWorksheet('Inventory Transactions');
+
+            let row = 1;
+            let boldStyle = excelModule.getStyle(wb,'#000000','12pt',true);
+            ws.cell(row, 1)
+                .string('Item: ');
+            ws.cell(row, 2)
+                .string(uom.itemName)
+                .style(boldStyle);
+
+            row++;
+            ws.cell(row, 1)
+                .string('Subgroup: ');
+            ws.cell(row, 2)
+                .string(subgroupName)
+                .style(boldStyle);
+
+            row++;
+            ws.cell(row, 1)
+                .string('Group: ');
+            ws.cell(row, 2)
+                .string(groupName)
+                .style(boldStyle);
+
+            row++;
+            row++;
+            ws.cell(row, 1)
+                .string('Inventory Transactions from '+startDate.format('DD-MM-YYYY')+' to '+endDate.format('DD-MM-YYYY'))
+                .style(boldStyle);
+
+            row++;
+            row++;
+            let items = ['Date', 'Opening Stock', 'Receipts', 'Issues', 'Closing Stock', 'Comments', 'Username', 'Purchase details'];
+            for(let i in items) {
+                ws.cell(row, (parseInt(i)+1))
+                    .string(items[i])
+                    .style(boldStyle);
+            }
+
+            row++;
+            ws.cell(row, 1)
+                .string(startDate.format('DD-MM-YYYY'));
+            ws.cell(row, 2)
+                .number(openingStock)
+                .style(boldStyle);
 
 
-});
+            for(let key in transactions) {
+                if(transactions[key].receipts > 0) {
+                    receipts = transactions[key].receipts;
+                    issues = 0;
+                } else {
+                    receipts = 0;
+                    issues = transactions[key].receipts * -1;
+                }
+                closingStock = closingStock+receipts-issues;
+
+                let tempValue = '';
+                if(transactions[key].unitValue) {
+                    tempValue += `@ ${commonModule.currencyFormat(transactions[key].unitValue)}`;
+                }
+
+                let comments = '';
+                if(transactions[key].comments) {
+                    comments = transactions[key].comments;
+                }
+
+                // Each row of transaction
+                items = {
+                            1: {string: moment.unix(transactions[key].datetime).format('DD-MM-YYYY')},
+                            2: {string: ''},
+                            3: {number: (receipts ? receipts : '')+''},
+                            4: {number: (issues ? issues : '')+''},
+                            5: {number: closingStock+''},
+                            6: {string: comments},
+                            7: {string: transactions[key].username},
+                            8: {string: tempValue}
+                        };
+                row++;
+                ws = excelModule.objectToExcelRows(ws, row, items);
+            }
+
+            row++;
+            ws.cell(row, 1)
+                .string(endDate.format('DD-MM-YYYY'));
+            ws.cell(row, 5)
+                .number(closingStock)
+                .style(boldStyle);
+            
+        
+            let exportPath = commonModule.getDefaultExportPath();
+            let fileName = 'transaction_report_' + moment().format('_YYYY_MM_DD-HH_mm_ss');
+            fileName += '.xlsx';
+            exportPath = path.join(exportPath, fileName);
+            wb.write(exportPath);
+            console.log(path.normalize(exportPath));
+            require('electron').remote.shell.showItemInFolder(path.normalize(exportPath));
+        }
+    });
+}

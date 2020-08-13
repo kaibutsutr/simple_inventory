@@ -3,11 +3,18 @@ const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
+const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
 var subgroupID;
 
 $(document).ready(()=>{
+    if(usersModule.checkPermission('createSubGroup')) {
+        console.log('Permission granted: createSubGroup');
+        mainStuff();
+    }
+})
 
+function mainStuff() {
     let additionalArgs = window.process.argv;
     for(let needle of additionalArgs) {
         if(needle.search('id=')===0) {
@@ -59,8 +66,8 @@ $(document).ready(()=>{
                                 </div>`;
             $('#contentDiv').html(resultHTML);
         }
-    });
-})
+    });    
+}
 
 function editSubgroupSaved(subgroupID) {
     let name = commonModule.getValidValue('name');

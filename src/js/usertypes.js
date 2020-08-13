@@ -1,6 +1,7 @@
 const ipcRenderer = require('electron').ipcRenderer;
 const path = require('path');
 const appPath = require('electron').remote.app.getAppPath();
+
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const usersModule = require(path.join(appPath, 'src', 'modules', 'usersModule.js'));
 
@@ -11,6 +12,13 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
+    if(usersModule.checkPermission('viewUsertypes', 'createUsertypes')) {
+        console.log('Permission granted: viewUsertypes or createUsertypes');
+        mainStuff();
+    }
+});
+
+function mainStuff() {
     usersModule.getUsertypes((err, result)=>{
         if(err) {
             $('#usersDiv').html('Could not load data!');
@@ -49,8 +57,8 @@ $(document).ready(()=>{
                 ipcRenderer.send('redirect-window', 'usertypesView.html', [`${usertypeID}`]);
             });
         }
-    })
-});
+    })    
+}
 
 window.onerror = function(error, url, line) {
     console.log(error);
