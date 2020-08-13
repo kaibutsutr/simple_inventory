@@ -6,9 +6,10 @@ $(document).ready(()=>{
         $('#sidebar').toggleClass('active');
     });
     
-    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
-    console.log('Setting font size to '+currentSize+'px');
-    $(document.body).css('fontSize', currentSize+'px');
+    let userSettings = require('electron').remote.getGlobal('userSettings');
+    // console.log(userSettings);
+    console.log('Setting font size to '+userSettings.fontSize+'px');
+    $(document.body).css('fontSize', userSettings.fontSize+'px');
 
     getQuickMenu((err, data)=>{
         if(err) {
@@ -23,6 +24,6 @@ $(document).ready(()=>{
         }
     })
 
-    let version = require('electron').remote.getGlobal('sharedObject').version;
+    let version = require('electron').remote.getGlobal('userSettings').version;
     $('#versionHolder').html('ver '+version)
 })

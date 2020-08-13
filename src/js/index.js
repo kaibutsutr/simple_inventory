@@ -5,7 +5,7 @@ const appPath = require('electron').remote.app.getAppPath();
 const commonModule = require(path.join(appPath, 'src', 'modules', 'commonModule.js'));
 const inventoryModule = require(path.join(appPath, 'src', 'modules', 'inventoryModule.js'));
 
-let dbName = require('electron').remote.getGlobal('sharedObject').db;
+let dbName = require('electron').remote.getGlobal('userSettings').db;
 let username;
 
 commonModule.checkLoggedIn((err, user)=>{

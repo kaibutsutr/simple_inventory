@@ -83,8 +83,8 @@ function createDB() {
         } else {
             console.log('Successfully copied database');
             // Set DB
-            require('electron').remote.getGlobal('sharedObject').db = path.join(dbFolder,dbName);
-            let userSettings = require('electron').remote.getGlobal('sharedObject');
+            require('electron').remote.getGlobal('userSettings').db = path.join(dbFolder,dbName);
+            let userSettings = require('electron').remote.getGlobal('userSettings');
             fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
 
             alert('Successfully created new Database!\nPlease sign in for first time with admin / pass@1234');

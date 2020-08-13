@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-let dbName = require('electron').remote.getGlobal('sharedObject').db;
+let dbName = require('electron').remote.getGlobal('userSettings').db;
 // const dbName = 'skeleton.db';
 
 exports.setDB = (newDBName)=>{

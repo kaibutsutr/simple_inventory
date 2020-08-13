@@ -10,7 +10,7 @@ $(document).ready(()=>{
     });
 
     // Load font size
-    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    let currentSize = require('electron').remote.getGlobal('userSettings').fontSize;
     $('#fontSize').val(currentSize);
 });
 

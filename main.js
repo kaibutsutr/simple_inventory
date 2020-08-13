@@ -20,7 +20,9 @@ const menuTemplate = [{
     },
     {
        label: 'View',
-       submenu: [{role: 'reload'},{type: 'separator'},{role: 'togglefullscreen'},{role: 'toggledevtools'}]
+       submenu: [{role: 'reload'},{type: 'separator'},{role: 'togglefullscreen'}
+       ,{role: 'toggledevtools'}
+                ]
     },
     {
        role: 'window',
@@ -51,7 +53,8 @@ app.on('ready', ()=>{
 
     // Load version
     try {
-        version = fs.readFileSync(path.join(appPath,'src', 'misc', 'version'));
+        version = fs.readFileSync(path.join(appPath,'src', 'misc', 'version'))
+                        .toString();
     } catch(e) {
         console.log('Version file corrupted! Exiting...')
         app.quit();
@@ -60,12 +63,8 @@ app.on('ready', ()=>{
     // Check if running for first time
     let userSettingsPath = path.join(userPath, 'misc');
     if(!fs.existsSync(userSettingsPath)) {
+        console.log('Creating dir: '+userSettingsPath);
         fs.mkdirSync(userSettingsPath);
-    }
-    userSettingsPath = path.join(userSettingsPath, 'userSettings');
-    let defaultUserSettingsPath = path.join(appPath, 'src', 'misc', 'userSettings');
-    if(!fs.existsSync(userSettingsPath)) {
-        fs.copyFileSync(defaultUserSettingsPath, userSettingsPath);
     }
 
     // Load userSettings
@@ -79,11 +78,13 @@ app.on('ready', ()=>{
                             db: '',
                             fontSize: 14
                         };
-        // Write this usersettings to file
-        fs.writeFileSync(path.join(userPath,'misc','userSettings'), JSON.stringify(userSettings));
     }
     userSettings.version = version;
-    global.sharedObject = userSettings;
+    // Write usersettings to file
+    fs.writeFileSync(path.join(userPath,'misc','userSettings'), JSON.stringify(userSettings));
+    global.userSettings = userSettings;
+    console.log('New global variable saved...');
+    console.log(global.userSettings);
 
     win = new BrowserWindow({
         width: 1000,
@@ -114,6 +115,14 @@ app.on('activate', ()=>{
     if(BrowserWindow.getAllWinows().length === 0) {
         createWindow();
     }
+});
+
+ipcMain.on('save-global-user-settings', (event, userSettings)=>{
+    console.log('Saving global variable userSettings');
+    console.log(userSettings);
+    global.userSettings = userSettings;
+    fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
+    event.returnValue = true;
 });
 
 ipcMain.on('redirect-window', (event, fileName, params)=>{

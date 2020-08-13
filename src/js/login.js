@@ -8,15 +8,13 @@ const app = remote.app;
 const path = require('path');
 const appPath = app.getAppPath();
 const userPath = app.getPath('userData');
-const util = require('util');
-const { selectQuery } = require('../modules/dbModule');
-const { usertypePermissions } = require('../modules/usersModule');
 
 const commonModule = require(path.join(appPath,'src','modules','commonModule.js'));
 const usersModule = require(path.join(appPath,'src','modules','usersModule.js'));
 const dbModule = require(path.join(appPath,'src','modules','dbModule.js'));
 
-const SESSION_URL = remote.getGlobal('sharedObject').sessionURL;
+var sessionURL = remote.getGlobal('userSettings').sessionURL;
+var loginButtonClicked = false;
 
 commonModule.checkLoggedIn((err, user)=>{
     if(err) {
@@ -29,17 +27,17 @@ commonModule.checkLoggedIn((err, user)=>{
 
 $(document).ready(()=>{
 
-    let db = require('electron').remote.getGlobal('sharedObject').db;
-    console.log(db);
+    let db = require('electron').remote.getGlobal('userSettings').db;
     let firstTimeUse = false;
-    if(db=='') {
+    if(!db) {
         // Move skeleton.db from /src/db/skeleton.db to userData folder
         let dbPath = commonModule.getDefaultDBPath();
         dbPath = path.join(dbPath, 'firstDB.db');
         if(!fs.existsSync(dbPath)) {
+            console.log('Creating new DB...');
             fs.copyFileSync(path.join(appPath, 'src', 'db', 'skeleton.db'), dbPath);
+            console.log('New DB file copied to: '+dbPath);
         }
-        console.log('New DB file copied to: '+dbPath);
         $('#db').val(dbPath);
 
         // First time instructions
@@ -64,6 +62,11 @@ $(document).ready(()=>{
 })
 
 function login() {
+    if(!loginButtonClicked)
+        loginButtonClicked = true;
+    else
+        return true;
+
     let db = commonModule.getValidValue('db');
     let username = commonModule.getValidValue('username');
     let password = commonModule.getValidValue('password');
@@ -80,40 +83,48 @@ function login() {
             } else {
                 let tempResult = result[0];
                 if(commonModule.encryptPassword(password) == tempResult.password) {
+                    console.log('User authenticated successfully...');
                     $('#resultDiv').html('success!');
                     
                     // Set session cookies & redirect to index.html
-                    session.defaultSession.cookies.set({url:SESSION_URL, name:'username', value:username});
+                    if(!sessionURL)
+                        sessionURL = 'http://localhost/';
+                    session.defaultSession.cookies.set({url:sessionURL, name:'username', value:username});
 
                     // Fetch usertype permissions
                     let userPermissions = {};
-                    let getPermissions = util.promisify(usersModule.getPermissions);
-                    getPermissions(tempResult.usertypeID)
-                        .then((data)=>{
-                            for(let i in data) {
-                                userPermissions[data[i].usertypePermission] = data[i].usertypePermission;
-                            }
-                            remote.getGlobal('sharedObject').usertypeID = tempResult.usertypeID;
-                            remote.getGlobal('sharedObject').userPermissions = userPermissions;
+                    usersModule.getPermissions(tempResult.usertypeID, (err, data)=>{
+                        for(let i in data) {
+                            userPermissions[data[i].usertypePermission] = data[i].usertypePermission;
+                        }
 
-                            // Set DB
-                            remote.getGlobal('sharedObject').db = db;
-                            usersModule.getDBSettings((err, result)=>{
-                                if(!err) {
-                                    for(let i in result) {
-                                        if(result[i].property=='name')
-                                            remote.getGlobal('sharedObject').dbName = result[i].value;
-                                        if(result[i].property=='description')
-                                            remote.getGlobal('sharedObject').dbDescription = result[i].value;
-                                    }
+                        let userSettings = remote.getGlobal('userSettings');
+                        userSettings.usertypeID = tempResult.usertypeID;
+                        userSettings.userPermissions = userPermissions;
+
+                        // Set DB
+                        userSettings.db = db;
+
+                        usersModule.getDBSettings((err, result)=>{
+                            if(!err) {
+                                for(let i in result) {
+                                    if(result[i].property=='name')
+                                        userSettings.dbName = result[i].value;
+                                    if(result[i].property=='description')
+                                        userSettings.dbDescription = result[i].value;
                                 }
-                                let userSettings = remote.getGlobal('sharedObject');
-                                console.log(userSettings);
-                                fs.writeFileSync(path.join(userPath, 'misc', 'userSettings'), JSON.stringify(userSettings));
+                            }
+                            console.log('Before saving...');
+                            console.log(userSettings);
+                            if(ipcRenderer.sendSync('save-global-user-settings', userSettings)) {
+                                console.log('After saving...');
+                                console.log(remote.getGlobal('userSettings'));
                                 ipcRenderer.send('redirect-window', 'index.html', []);
-                            });
-                            
-                    });
+                            }
+                        });
+
+                    })
+
 
                 } else {
                     $('#resultDiv').html('failed!');
@@ -142,7 +153,7 @@ function selectDB() {
                     console.log(error);
                 } else {
                     let dbVersion = result[0].value;
-                    let version = require('electron').remote.getGlobal('sharedObject').version;
+                    let version = require('electron').remote.getGlobal('userSettings').version;
                     if(commonModule.checkDBCompatibility(version, dbVersion)) {
                         $('#db').val(db);
                         return true;

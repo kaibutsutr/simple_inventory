@@ -240,7 +240,7 @@ exports.indianNumberFormat = function(num, roundoff) {
 }
 
 exports.checkLoggedIn = (callback) => {
-    let sessionURL = require('electron').remote.getGlobal('sharedObject').sessionURL;
+    let sessionURL = require('electron').remote.getGlobal('userSettings').sessionURL;
     require('electron').remote.session.defaultSession.cookies.get({url:sessionURL})
     .then((cookies)=>{
         if(Object.keys(cookies).length > 0) {
@@ -257,21 +257,21 @@ exports.checkLoggedIn = (callback) => {
 }
 
 exports.increaseFontSize = ()=>{
-    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    let currentSize = require('electron').remote.getGlobal('userSettings').fontSize;
     currentSize += 2;
-    require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
+    require('electron').remote.getGlobal('userSettings').fontSize = currentSize;
     $(document.body).css('fontSize', currentSize+'px');
-    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    let userSettings = require('electron').remote.getGlobal('userSettings');
     require('fs').writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
     $('#fontSize').val(currentSize);
 }
 
 exports.decreaseFontSize = ()=>{
-    let currentSize = require('electron').remote.getGlobal('sharedObject').fontSize;
+    let currentSize = require('electron').remote.getGlobal('userSettings').fontSize;
     currentSize -= 2;
-    require('electron').remote.getGlobal('sharedObject').fontSize = currentSize;
+    require('electron').remote.getGlobal('userSettings').fontSize = currentSize;
     $(document.body).css('fontSize', currentSize+'px');
-    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    let userSettings = require('electron').remote.getGlobal('userSettings');
     require('fs').writeFileSync(path.join(appPath, 'src', 'misc', 'userSettings'), JSON.stringify(userSettings));
     $('#fontSize').val(currentSize);
 }
@@ -332,9 +332,10 @@ exports.getQuickMenu = (callback)=>{
             username = result;
 
         let resultHTML = '';
-        let db = require('electron').remote.getGlobal('sharedObject').db;
-        let dbName = require('electron').remote.getGlobal('sharedObject').dbName;
-        let dbDescription = require('electron').remote.getGlobal('sharedObject').dbDescription;
+        let userSettings = require('electron').remote.getGlobal('userSettings');
+        // console.log(userSettings);
+        let db = require('electron').remote.getGlobal('userSettings').db;
+        let dbName = require('electron').remote.getGlobal('userSettings').dbName;
 
         let maxLength = db.length;
         if(maxLength<50)

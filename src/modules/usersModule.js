@@ -229,7 +229,7 @@ exports.getPermissions = (usertypeID, callback)=>{
 }
 
 exports.checkPermission = (permission1, permission2='', permission3='')=>{
-    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    let userSettings = require('electron').remote.getGlobal('userSettings');
     // console.log(userSettings);
     let userPermissions = Object.keys(userSettings.userPermissions);
     if(userPermissions.indexOf(permission1)!==-1 || userPermissions.indexOf(permission2)!==-1 || userPermissions.indexOf(permission3)!==-1) {
@@ -240,7 +240,7 @@ exports.checkPermission = (permission1, permission2='', permission3='')=>{
 }
 
 exports.getUsertype = ()=>{
-    let userSettings = require('electron').remote.getGlobal('sharedObject');
+    let userSettings = require('electron').remote.getGlobal('userSettings');
     // console.log(userSettings);
     return userSettings.usertypeID;
 }
