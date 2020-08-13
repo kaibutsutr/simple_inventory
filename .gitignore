@@ -3,3 +3,4 @@ test.js
 skeleton.db
 app.asar
 app.asar.unpacked
+dist

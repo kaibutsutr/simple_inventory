@@ -44,7 +44,9 @@ $(document).ready(()=>{
         $('#firstTimeInstructions').html(`<b>Welcome to Simple Inventory!</b><br />We realize that you are using 
             this installation of Simple Inventory for the first time. 
             <br /><br />Please login using <b>admin / pass@1234</b><br />
-            <br />Default database: <b>${dbPath}</b>`);
+            <br />Default database: <b>${dbPath}</b>
+            <br /><br />
+            Also, please note that by using this software, you are in agreement with our End User License Agreement: <a href="#" class="link" onclick="openExternal('https://www.orangetreesoft.com/simple_inventory/eula')">https://www.orangetreesoft.com/simple_inventory/eula</a>`);
 
     } else {
         $('#db').val(db);

@@ -27,3 +27,7 @@ $(document).ready(()=>{
     let version = require('electron').remote.getGlobal('userSettings').version;
     $('#versionHolder').html('ver '+version)
 })
+
+function openExternal(address) {
+    require('electron').remote.shell.openExternal(address);
+}
