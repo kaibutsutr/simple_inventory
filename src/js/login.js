@@ -72,16 +72,20 @@ function login() {
     let db = commonModule.getValidValue('db');
     let username = commonModule.getValidValue('username');
     let password = commonModule.getValidValue('password');
-    if(!username || !password)
+    if(!username || !password) {
+        loginButtonClicked = false;
         return false;
+    }
 
     usersModule.getUserByUsername(username, db, (err, result)=>{
         if(err) {
             console.log(err);
             $('#resultDiv').html(err);
+            loginButtonClicked = false;
         } else {
             if(Object.keys(result).length===0) {
                 $('#resultDiv').html('No such user!');
+                loginButtonClicked = false;
             } else {
                 let tempResult = result[0];
                 if(commonModule.encryptPassword(password) == tempResult.password) {
@@ -130,6 +134,7 @@ function login() {
 
                 } else {
                     $('#resultDiv').html('failed!');
+                    loginButtonClicked = false;
                 }
             }
         }

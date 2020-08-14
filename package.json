@@ -21,6 +21,9 @@
         "maintainer": "Jacob Mathew <simpleinventory@orangetreesoft.com>",
         "target": [ "deb" ],
         "synopsis": "Simple Invetory Management software built on Electron.JS"
+    },
+    "win": {
+        "icon": "assets/icon.ico"
     }
   },
   "dependencies": {
