@@ -416,7 +416,8 @@ exports.exportPDF = (fileName)=>{
     fileName += '.pdf';
     ipcRenderer.send('print-window-pdf', fileName);
 
-    ipcRenderer.on('print-window-pdf-reply', ()=>{
+    ipcRenderer.on('print-window-pdf-reply', (event, filePath)=>{
+        require('electron').remote.shell.showItemInFolder(path.normalize(filePath));
         require('electron').remote.getCurrentWindow()
             .close();
     });

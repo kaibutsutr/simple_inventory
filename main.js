@@ -197,15 +197,8 @@ ipcMain.on('print-window-pdf', function(event, fileName, arg) {
     
     dialogWindow.webContents.printToPDF({}).then(data => {
         exportPath += '/'+fileName;
-
-        fs.writeFile(exportPath, data, (error) => {
-            if(error)
-                console.log('Write PDF successfully to '+exportPath);
-            else
-                require('electron').shell.showItemInFolder(exportPath);
-        });
-
-        event.sender.send('print-window-reply', paramsMain);
+        fs.writeFileSync(exportPath, data);
+        event.sender.send('print-window-pdf-reply', exportPath);
     });
 });
 

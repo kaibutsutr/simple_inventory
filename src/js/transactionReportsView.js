@@ -59,7 +59,7 @@ function mainStuff() {
                                                 <i class="fa fa-minus-circle"></i> Issue
                                             </button>
                                             <button class="btn btn-outline-secondary" id="pdfButton">
-                                                <i class="fa fa-file-pdf-o"></i> PDF
+                                                <i class="fa fa-file-pdf-o"></i> Export PDF
                                             </button>
                                             <button class="btn btn-outline-secondary" id="printButton">
                                                 <i class="fa fa-print"></i> Print
@@ -230,12 +230,14 @@ function exportToExcel() {
                     .style(boldStyle);
             }
 
+            let numberStyleBold = excelModule.getNumberStyle(wb, uom.roundoff, true);
+
             row++;
             ws.cell(row, 1)
                 .string(startDate.format('DD-MM-YYYY'));
             ws.cell(row, 2)
                 .number(openingStock)
-                .style(boldStyle);
+                .style(numberStyleBold);
 
 
             for(let key in transactions) {
@@ -270,7 +272,8 @@ function exportToExcel() {
                             8: {string: tempValue}
                         };
                 row++;
-                ws = excelModule.objectToExcelRows(ws, row, items);
+                let numberStyle = excelModule.getNumberStyle(wb, uom.roundoff);
+                ws = excelModule.objectToExcelRows(ws, row, items, numberStyle);
             }
 
             row++;
@@ -278,16 +281,18 @@ function exportToExcel() {
                 .string(endDate.format('DD-MM-YYYY'));
             ws.cell(row, 5)
                 .number(closingStock)
-                .style(boldStyle);
+                .style(numberStyleBold);
             
         
             let exportPath = commonModule.getDefaultExportPath();
             let fileName = 'transaction_report_' + moment().format('_YYYY_MM_DD-HH_mm_ss');
             fileName += '.xlsx';
             exportPath = path.join(exportPath, fileName);
-            wb.write(exportPath);
-            console.log(path.normalize(exportPath));
-            require('electron').remote.shell.showItemInFolder(path.normalize(exportPath));
+            wb.write(exportPath, (err, stats)=>{
+                console.log(path.normalize(exportPath));
+                // require('electron').remote.shell.openItem(path.normalize(exportPath));
+                require('electron').remote.shell.showItemInFolder(path.normalize(exportPath));
+            });
         }
     });
 }

@@ -1,4 +1,4 @@
-exports.objectToExcelRows = (ws, row, items)=>{
+exports.objectToExcelRows = (ws, row, items, numberStyle=null)=>{
     for(let i in items) {
         key = Object.keys(items[i])[0];
         switch(key) {
@@ -7,8 +7,14 @@ exports.objectToExcelRows = (ws, row, items)=>{
                     .string(''+items[i][key]);
                 break;
             case 'number':
-                ws.cell(row, i)
-                    .number(parseInt(items[i][key]+0));
+                if(!numberStyle) {
+                    ws.cell(row, i)
+                        .number(parseFloat(items[i][key]+0));
+                } else {
+                    ws.cell(row, i)
+                        .number(parseFloat(items[i][key]+0))
+                        .style(numberStyle);
+                }
                 break;
         }
     }
@@ -22,6 +28,24 @@ exports.getStyle = (wb, fontColor, fontSize, isBold=false)=>{
             size: fontSize,
             bold: isBold
         }
+    });
+    return style;
+}
+
+exports.getNumberStyle = (wb, roundoff, isBold=false)=>{
+    let formatString = '#';
+    if(roundoff>0)
+        formatString += '.';
+    for(let i=roundoff ; i>0 ; i--) {
+        formatString += '0';
+    }
+    formatString = `${formatString};-${formatString};-`;
+    console.log(formatString);
+    let style = wb.createStyle({
+        font: {
+            bold: isBold
+        },
+        numberFormat: formatString
     });
     return style;
 }
