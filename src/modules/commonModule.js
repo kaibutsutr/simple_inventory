@@ -36,53 +36,53 @@ exports.loadSideMenu = function(currentPage, callback) {
     let resultHTML = `<ul class="list-unstyled components">
                         <li>
                             <a href="#inventoryMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <i class="fa fa-university"></i> Inventory
+                                <i class="fa fa-university"></i> Ürün Stokları
                             </a>
                             <ul class="collapse `+((mainPage=='inventory') ? `show` : ``)+` list-unstyled" id="inventoryMenu">
                                 <li `+((currentPage=='index.html') ? `class="active"` : ``)+`>
                                     <a href="index.html">
                                         <i class="fa fa-university"></i>
-                                        Current Inventory
+                                        Güncel Stok
                                     </a>
                                 </li>`;
 
     if(thisUsersModule.checkPermission('viewInventoryTransactions'))
         resultHTML +=              `<li `+((currentPage=='inventoryTransactions.html') ? `class="active"` : ``)+`>
-                                        <a href="inventoryTransactions.html"><i class="fa fa-arrows-h"></i> Inventory Transactions</a>
+                                        <a href="inventoryTransactions.html"><i class="fa fa-arrows-h"></i> Zimmet İşlemleri</a>
                                     </li>
                                     <li `+((currentPage=='transactionReports.html') ? `class="active"` : ``)+`>
-                                        <a href="transactionReports.html"><i class="fa fa-file-excel-o"></i> Transaction Reports</a>
+                                        <a href="transactionReports.html"><i class="fa fa-file-excel-o"></i> Stok Raporları</a>
                                     </li>`;
                                
     resultHTML +=          `</ul>
                         </li>
                         <li>
                             <a href="#masterMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <i class="fa fa-cogs"></i> Inventory Master
+                                <i class="fa fa-cogs"></i> Envanter Yönetimi
                             </a>
                             <ul class="collapse `+((mainPage=='inventoryMaster') ? `show` : ``)+` list-unstyled" id="masterMenu">`;
 
-    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createGroup'))
+    if(thisUsersModule.checkPermission('createValuations'))
         resultHTML +=              `<li `+((currentPage=='groups.html') ? `class="active"` : ``)+`>
                                         <a href="groups.html"><i class="fa fa-folder-open"></i> Groups</a>
                                     </li>`;
 
-    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createSubGroup'))
+    if(thisUsersModule.checkPermission('createValuations'))
         resultHTML +=              `<li `+((currentPage=='subgroups.html') ? `class="active"` : ``)+`>
                                         <a href="subgroups.html"><i class="fa fa-dot-circle-o"></i> Subgroups</a>
                                     </li>`;
 
-    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createItem'))                      
+    if(thisUsersModule.checkPermission('createValuations'))                      
         resultHTML +=              `<li `+((currentPage=='items.html') ? `class="active"` : ``)+`>
                                         <a href="items.html"><i class="fa fa-file"></i> Items</a>
                                     </li>`;
 
-    if(thisUsersModule.checkPermission('viewInventoryTransactions', 'createUOM'))   
+    if(thisUsersModule.checkPermission('createValuations'))   
         resultHTML +=              `<li `+((currentPage=='uom.html') ? `class="active"` : ``)+`>
                                         <a href="uom.html"><i class="fa fa-balance-scale"></i> UOM</a>
                                     </li>`;
 
-    resultHTML +=           `</ul>
+   /* resultHTML +=           `</ul>
                         </li>
                         <li>
                             <a href="#valuationsMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -99,12 +99,13 @@ exports.loadSideMenu = function(currentPage, callback) {
         resultHTML +=               `<li `+((currentPage=='valuationsNew.html') ? `class="active"` : ``)+`>
                                         <a href="valuationsNew.html"><i class="fa fa-viacoin"></i> New Valuation</a>
                                     </li>`;
+                                    */
 
     resultHTML +=           `</ul>
                         </li>
                         <li>
                             <a href="#usersMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <i class="fa fa-user"></i> Users
+                                <i class="fa fa-user"></i> Kullanıcılar
                             </a>
                             <ul class="collapse `+((mainPage=='users') ? `show` : ``)+` list-unstyled" id="usersMenu">`;
 
@@ -122,7 +123,7 @@ exports.loadSideMenu = function(currentPage, callback) {
                         </li>
                         <li>
                             <a href="#accountMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <i class="fa fa-universal-access"></i> My Settings
+                                <i class="fa fa-universal-access"></i> Ayarlar
                             </a>
                             <ul class="collapse `+((mainPage=='myAccount') ? `show` : ``)+` list-unstyled" id="accountMenu">`;
 
@@ -132,7 +133,7 @@ exports.loadSideMenu = function(currentPage, callback) {
                                     </li>`;
 
     resultHTML +=               `<li `+((currentPage=='userSettings.html') ? `class="active"` : ``)+`>
-                                    <a href="userSettings.html"><i class="fa fa-user"></i> User Settings</a>
+                                    <a href="userSettings.html"><i class="fa fa-user"></i> Kullanıcı Ayarları</a>
                                 </li>`;
     
     if(thisUsersModule.getUsertype()===1)
@@ -141,7 +142,7 @@ exports.loadSideMenu = function(currentPage, callback) {
                                     </li>`;
 
     resultHTML +=               `<li `+((currentPage=='logout.html') ? `class="active"` : ``)+`>
-                                    <a href="logout.html"><i class="fa fa-power-off"></i> Logout</a>
+                                    <a href="logout.html"><i class="fa fa-power-off"></i> Çıkış Yap</a>
                                 </li>
                             </ul>
                         </li>
