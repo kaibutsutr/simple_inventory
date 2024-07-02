@@ -11,26 +11,26 @@ var userPath = app.getPath('userData');
 
 // Menu
 const menuTemplate = [{
-    label: 'File',
-    submenu: [{role: 'close',label: 'Exit'}]
+    label: 'Dosya',
+    submenu: [{role: 'close', label: 'Çıkış'}]
     },
     {
-       label: 'Edit',
-       submenu: [{role: 'copy'},{role: 'paste'}]
+       label: 'Düzenle',
+       submenu: [{role: 'copy', label: 'Kopyala'},{role: 'paste', label: 'Yapıştır'}]
     },
     {
-       label: 'View',
-       submenu: [{role: 'reload'},{type: 'separator'},{role: 'togglefullscreen'},
+       label: 'Görünüm',
+       submenu: [{role: 'reload',label: 'Yenile'},{type: 'separator'},{role: 'togglefullscreen', label: 'Ekranı Kapla'},
                 // {role: 'toggledevtools'}
                 ]
     },
     {
-       role: 'window',
-       submenu: [{role: 'minimize'}]
+       role: 'Pencere',
+       submenu: [{role: 'minimize', label: 'Simge Durumuna Küçült'}]
     },
     {
-       role: 'help',
-       submenu: [{label: 'About Simple Inventory',
+       role: 'Help', label: 'Yardım',
+       submenu: [{label: 'Hakkında',
                 click: ()=>{
                     showAboutDialog();
                 }}]
