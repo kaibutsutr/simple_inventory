@@ -36,15 +36,15 @@ function mainStuff() {
                 uomArray[uoms[i].id] = uoms[i];
             }
 
-            let resultHTML = `<h4><i class="fa fa-arrows-h"></i> Inventory Transactions</h4>
-                                <h6><span class="badge badge-primary">Please select an item below to view transactions</span></h6>
+            let resultHTML = `<h4><i class="fa fa-arrows-h"></i> Zimmet İşlemleri</h4>
+                                <h6><span class="badge badge-primary">Lütfen işlem yapmak istediğiniz ürünü seçiniz</span></h6>
                                 <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Group</th>
-                                        <th>Subgroup</th>
-                                        <th>Item</th>
-                                        <th>Closing Stock</th>
+                                        <th>Şube</th>
+                                        <th>Grup</th>
+                                        <th>Ürün</th>
+                                        <th>Ürün Stoğu</th>
                                     </tr>
                                 </thead>
                                 <tbody>`;

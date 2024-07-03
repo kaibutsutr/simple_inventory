@@ -56,10 +56,10 @@ function mainStuff() {
                                     <div id="itemGroupDetails"></div>
                                     <div style="padding-top:10px">
                                         <button class="btn btn-outline-secondary" id="receiptButton">
-                                            <i class="fa fa-plus-circle"></i> Receipt
+                                            <i class="fa fa-plus-circle"></i> Zimmetle
                                         </button>
                                         <button class="btn btn-outline-secondary" id="issueButton">
-                                            <i class="fa fa-minus-circle"></i> Issue
+                                            <i class="fa fa-minus-circle"></i> Zimmetten Çıkar
                                         </button>
                                     </div>
                                     <div style="width:100%;padding:20px;" class="text-center">
@@ -72,13 +72,13 @@ function mainStuff() {
                                 <table class="table table-sm table-light table-bordered table-hover">
                                     <thead>
                                         <tr class="text-center">
-                                            <th>Date</th>
-                                            <th>Opening Stock</th>
-                                            <th>Receipts</th>
-                                            <th>Issues</th>
-                                            <th>Closing Stock</th>
-                                            <th>Comments</th>
-                                            <th>Username</th>
+                                            <th>Tarih</th>
+                                            <th>Açılış Stoğu</th>
+                                            <th>Zimmetler</th>
+                                            <th>Zimmetten Çıkışlar</th>
+                                            <th>Kapanış Stoğu</th>
+                                            <th>Yorumlar</th>
+                                            <th>Kullanıcı Adı</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -169,8 +169,8 @@ function mainStuff() {
                     if(err) {
                         $('#itemGroupDetails').html('Error loading data!');
                     } else {
-                        let tempHTML = `Subgroup: <b>${result[0].name}</b>
-                                        <br />Group: <b>${result[0].groupName}</b>
+                        let tempHTML = `Grup: <b>${result[0].name}</b>
+                                        <br />Şube: <b>${result[0].groupName}</b>
                                         <br />`;
                         $('#itemGroupDetails').html(tempHTML);
                     }

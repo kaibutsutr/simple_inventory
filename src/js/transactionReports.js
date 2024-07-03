@@ -46,11 +46,11 @@ function mainStuff() {
                 }
             }
 
-            let resultHTML = `<h3>Transaction Reports</h3>
+            let resultHTML = `<h3>Stok Raporları</h3>
                                 
                                 <div class="form-group row" style="width:100%;">
                                     <div class="col-md-3 col-lg-3 text-right">
-                                        <label class="col-form-label">From</label>
+                                        <label class="col-form-label">Başlangıc Tarihi</label>
                                     </div>
                                     <div class="col-md-6 col-lg-6">
                                         <input type="text" id="startDate" class="form-control text-center" style="width:150px" />
@@ -59,7 +59,7 @@ function mainStuff() {
 
                                 <div class="form-group row" style="width:100%;">
                                     <div class="col-md-3 col-lg-3 text-right">
-                                        <label class="col-form-label">To</label>
+                                        <label class="col-form-label">Bitiş Tarihi</label>
                                     </div>
                                     <div class="col-md-6 col-lg-6">
                                         <input type="text" id="endDate" class="form-control text-center" style="width:150px" />
@@ -68,7 +68,7 @@ function mainStuff() {
 
                                 <div class="form-group row" style="width:100%;">
                                     <div class="col-md-3 col-lg-3 text-right">
-                                        <label class="col-form-label">Item</label>
+                                        <label class="col-form-label">Ürün Adı</label>
                                     </div>
                                     <div class="col-md-9 col-lg-9">
                                         <input type="text" id="itemName" class="form-control" />
@@ -87,7 +87,7 @@ function mainStuff() {
                                     <div class="col-md-3 col-lg-3 text-right"></div>
                                     <div class="col-md-9 col-lg-9">
                                         <button class="btn btn-outline-secondary" onclick="fetchReport()">
-                                            <i class="fa fa-file-excel-o"></i> Get Report
+                                            <i class="fa fa-file-excel-o"></i> Raporu
                                         </button>
                                     </div>
                                 </div>`;

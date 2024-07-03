@@ -18,6 +18,7 @@ $(document).ready(()=>{
     }
 });
 
+
 function mainStuff() {
     inventoryModule.getGroupsAndSubgroups((err, result) => {
         if(err) {

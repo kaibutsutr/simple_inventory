@@ -32,6 +32,8 @@ exports.loadSideMenu = function(currentPage, callback) {
             mainPage = 'myAccount';
             break;  
     }
+
+    //DROPDOWN MENU SETTINGS
     
     let resultHTML = `<ul class="list-unstyled components">
                         <li>
@@ -42,7 +44,7 @@ exports.loadSideMenu = function(currentPage, callback) {
                                 <li `+((currentPage=='index.html') ? `class="active"` : ``)+`>
                                     <a href="index.html">
                                         <i class="fa fa-university"></i>
-                                        Güncel Stok
+                                        Güncel Ürün Stoğu
                                     </a>
                                 </li>`;
 
@@ -62,31 +64,31 @@ exports.loadSideMenu = function(currentPage, callback) {
                             </a>
                             <ul class="collapse `+((mainPage=='inventoryMaster') ? `show` : ``)+` list-unstyled" id="masterMenu">`;
 
-    if(thisUsersModule.checkPermission('createValuations'))
+    if(thisUsersModule.checkPermission( 'createGroup'))
         resultHTML +=              `<li `+((currentPage=='groups.html') ? `class="active"` : ``)+`>
                                         <a href="groups.html"><i class="fa fa-folder-open"></i> Groups</a>
                                     </li>`;
 
-    if(thisUsersModule.checkPermission('createValuations'))
+    if(thisUsersModule.checkPermission('createSubGroup'))
         resultHTML +=              `<li `+((currentPage=='subgroups.html') ? `class="active"` : ``)+`>
                                         <a href="subgroups.html"><i class="fa fa-dot-circle-o"></i> Subgroups</a>
                                     </li>`;
 
-    if(thisUsersModule.checkPermission('createValuations'))                      
+    if(thisUsersModule.checkPermission('createItem'))                      
         resultHTML +=              `<li `+((currentPage=='items.html') ? `class="active"` : ``)+`>
                                         <a href="items.html"><i class="fa fa-file"></i> Items</a>
                                     </li>`;
 
-    if(thisUsersModule.checkPermission('createValuations'))   
+    if(thisUsersModule.checkPermission( 'createUOM'))   
         resultHTML +=              `<li `+((currentPage=='uom.html') ? `class="active"` : ``)+`>
                                         <a href="uom.html"><i class="fa fa-balance-scale"></i> UOM</a>
                                     </li>`;
 
-   /* resultHTML +=           `</ul>
+    resultHTML +=           `</ul>
                         </li>
                         <li>
                             <a href="#valuationsMenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                                <i class="fa fa-usd"></i> Valuations
+                                <i class="fa fa-usd"></i> Satışlar
                             </a>
                             <ul class="collapse `+((mainPage=='valuations') ? `show` : ``)+` list-unstyled" id="valuationsMenu">`;
 
@@ -99,7 +101,6 @@ exports.loadSideMenu = function(currentPage, callback) {
         resultHTML +=               `<li `+((currentPage=='valuationsNew.html') ? `class="active"` : ``)+`>
                                         <a href="valuationsNew.html"><i class="fa fa-viacoin"></i> New Valuation</a>
                                     </li>`;
-                                    */
 
     resultHTML +=           `</ul>
                         </li>
@@ -292,7 +293,7 @@ exports.fold = (input, lineSize, lineArray) => {
 }
 
 exports.currencyFormat = (value)=>{
-    return `Rs. ${value}`;
+    return ` ${value} TL`;
 }
 
 exports.getMonthsDropdownOptions = (currentMonth)=>{
@@ -343,14 +344,15 @@ exports.getQuickMenu = (callback)=>{
             maxLength = 50;
         let smallDB = '...'+db.substr(maxLength - 20);
         resultHTML += `<div class="d-flex p-2">
-                            <div class="p-2 border">Logged in: <b>${username}</b></div>
-                            <div class="p-2 border">DB: <b>${smallDB}</b> 
+                            <div class="p-2 border">Kullanıcı Adı: <b>${username}</b></div>
+                            
+                            <div class="p-2 border"><i class="fa fa-power-off"></i> <a href="logout.html">Çıkış Yap</a></div>
+                        </div>`;
+                        /*<div class="p-2 border">DB: <b>${smallDB}</b> 
                                 <span data-toggle="tooltip" data-html="true" title="<div style=text-align:left>DB: <b>${smallDB}</b><br />Name: <b>${dbName}</b></div>">
                                     <i class="fa fa-exclamation-circle"></i>
                                 </span>
-                            </div>
-                            <div class="p-2 border"><i class="fa fa-power-off"></i> <a href="logout.html">Logout</a></div>
-                        </div>`;
+                            </div>*/
         callback('', resultHTML);
     })
 }

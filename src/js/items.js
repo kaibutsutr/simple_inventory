@@ -13,7 +13,7 @@ $(document).ready(()=>{
         $('#menuHolder').html(html);
     });
 
-    if(usersModule.checkPermission('viewInventoryTransactions', 'createItem')) {
+    if(usersModule.checkPermission('createItem')) {
         console.log('Permission granted: viewInventoryTransactions or createItem');
         mainStuff();
     }

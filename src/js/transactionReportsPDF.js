@@ -39,26 +39,26 @@ $(document).ready(()=>{
     
                     let resultHTML = `<div class="text-center printButton">
                                             <button class="btn btn-outline-primary" onclick="commonModule.exportPDF('transaction_report')">
-                                                <i class="fa fa-file-pdf-o"></i> Export PDF
+                                                <i class="fa fa-file-pdf-o"></i> PDF olarak kaydet
                                             </button>
                                             <button class="btn btn-outline-primary" onclick="commonModule.printPage()">
-                                                <i class="fa fa-print"></i> Print
+                                                <i class="fa fa-print"></i> Yazdır
                                             </button>
                                         </div>
                                         <h4>${uom.itemName}</h4>
                                         <div id="itemGroupDetails"></div>
                                         <br />
-                                        <h5>Inventory transactions from ${startDate.format('DD-MM-YYYY')} to ${endDate.format('DD-MM-YYYY')}</h5>
+                                        <h5> ${startDate.format('DD-MM-YYYY')} ve ${endDate.format('DD-MM-YYYY')} tarihleri arasındaki zimmet işlemleri</h5>
                                         <table class="table table-sm table-light table-bordered table-hover">
                                             <thead>
                                                 <tr class="text-center">
-                                                    <th>Date</th>
-                                                    <th>Opening Stock</th>
-                                                    <th>Receipts</th>
-                                                    <th>Issues</th>
-                                                    <th>Closing Stock</th>
-                                                    <th>Comments</th>
-                                                    <th>Username</th>
+                                                    <th>Tarih</th>
+                                                    <th>Açılış Stoğu</th>
+                                                    <th>Zimmetler</th>
+                                                    <th>Zimmetten Çıkanlar</th>
+                                                    <th>Kapanış Stoğu</th>
+                                                    <th>Yorumlar</th>
+                                                    <th>Kullanıcı Adı</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -112,7 +112,7 @@ $(document).ready(()=>{
                                 </table>
                                 <div class="text-center printButton">
                                     <button class="btn btn-outline-primary" onclick="commonModule.exportPDF('transaction_report')">
-                                        <i class="fa fa-file-pdf-o"></i> Export PDF
+                                        <i class="fa fa-file-pdf-o"></i> PDF olarak kaydet
                                     </button>
                                 </div>`;
                     $('#contentDiv').html(resultHTML);

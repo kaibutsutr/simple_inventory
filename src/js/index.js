@@ -42,15 +42,15 @@ $(document).ready(()=>{
                 uomArray[uoms[i].id] = uoms[i];
             }
 
-            let resultHTML = `<h4><i class="fa fa-university"></i> Current Inventory</h4>
-                                <h6><span class="badge badge-primary">Please select an item below to view transactions</span></h6>
+            let resultHTML = `<h4><i class="fa fa-university"></i> Güncel Ürün Stoğu</h4>
+                                <h6><span class="badge badge-primary">Lütfen görmek istediğiniz ürüne tıklayınız.</span></h6>
                                 <table class="table table-sm table-light table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Group</th>
-                                        <th>Subgroup</th>
-                                        <th>Item</th>
-                                        <th>Closing Stock</th>
+                                        <th>Şube</th>
+                                        <th>Grup</th>
+                                        <th>Ürün</th>
+                                        <th>Ürün Stoğu</th>
                                     </tr>
                                 </thead>
                                 <tbody>`;

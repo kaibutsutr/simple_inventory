@@ -53,30 +53,30 @@ function mainStuff() {
                                         <div id="itemGroupDetails"></div>
                                         <div style="padding-top:10px">
                                             <button class="btn btn-outline-secondary" id="receiptButton">
-                                                <i class="fa fa-plus-circle"></i> Receipt
+                                                <i class="fa fa-plus-circle"></i> Zimmetle
                                             </button>
                                             <button class="btn btn-outline-secondary" id="issueButton">
-                                                <i class="fa fa-minus-circle"></i> Issue
+                                                <i class="fa fa-minus-circle"></i> Zimmetten Çıkar
                                             </button>
                                             <button class="btn btn-outline-secondary" id="pdfButton">
-                                                <i class="fa fa-file-pdf-o"></i> Export PDF
+                                                <i class="fa fa-file-pdf-o"></i> PDF olarak kaydet
                                             </button>
                                             <button class="btn btn-outline-secondary" id="printButton">
-                                                <i class="fa fa-print"></i> Print
+                                                <i class="fa fa-print"></i> Yazdır
                                             </button>
                                             <button class="btn btn-outline-secondary" id="excelButton">
-                                                <i class="fa fa-file-excel-o"></i> Export to Excel
+                                                <i class="fa fa-file-excel-o"></i> Excel olarak kaydet
                                             </button>
                                         </div>
                                         <br />
                                         <table class="table table-sm table-light table-bordered table-hover">
                                             <thead>
                                                 <tr class="text-center">
-                                                    <th>Date</th>
-                                                    <th>Opening Stock</th>
-                                                    <th>Receipts</th>
-                                                    <th>Issues</th>
-                                                    <th>Closing Stock</th>
+                                                    <th>Tarih</th>
+                                                    <th>Açılış Stoğu</th>
+                                                    <th>Zimmetler</th>
+                                                    <th>Zimmetten Çıkışlar</th>
+                                                    <th>Kapanış Stoğu</th>
                                                     <th>Comments</th>
                                                     <th>Username</th>
                                                 </tr>

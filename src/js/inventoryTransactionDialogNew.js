@@ -58,11 +58,11 @@ function mainStuff() {
     console.log(`itemID: ${itemID} & receipt: ${receipt} & itemName: ${itemName} & month: ${month}`);
 
     let resultHTML = `<div class="form-group row text-center" style="width:100%;">
-                            <div class="text-center col-md-12 col-lg-12"><b>New Inventory Receipt</b></div>
+                            <div class="text-center col-md-12 col-lg-12"><b>Yeni Zimmet İşlemi</b></div>
                         </div>
                         <div class="row form-group" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                Item
+                                Ürün
                             </div>
                             <div class="col-md-9 col-lg-9">
                                 <b>${itemName}</b>
@@ -70,7 +70,7 @@ function mainStuff() {
                         </div>
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                <label class="col-form-label">Date</label>
+                                <label class="col-form-label">Tarih</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
                                 <input type="text" id="date" class="form-control" />
@@ -78,7 +78,7 @@ function mainStuff() {
                         </div>
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                <label class="col-form-label">`+(receipt ? 'Receipt' : 'Issue')+` Qty</label>
+                                <label class="col-form-label">`+(receipt ? 'Ürün' : 'Ürün')+` Miktarı</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
                                 <input type="text" id="receipts" class="form-control" />
@@ -87,7 +87,7 @@ function mainStuff() {
                         `+(receipt ? `
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                <label class="col-form-label">Unit Price</label>
+                                <label class="col-form-label">Ürün Fiyatı</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
                                 <input type="text" id="unitValue" class="form-control" />
@@ -95,7 +95,7 @@ function mainStuff() {
                         </div>` : ``)+`
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                <label class="col-form-label">Comments</label>
+                                <label class="col-form-label">Yorumlar</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
                                 <input type="text" id="comments" class="form-control" />
@@ -103,7 +103,7 @@ function mainStuff() {
                         </div>
                         <div class="form-group row" style="width:100%;">
                             <div class="col-md-3 col-lg-3 text-right">
-                                <label class="col-form-label">Username</label>
+                                <label class="col-form-label">Kullanıcı Adı</label>
                             </div>
                             <div class="col-md-9 col-lg-9">
                                 <input type="text" id="username" class="form-control" readonly value="${username}" />
@@ -111,9 +111,9 @@ function mainStuff() {
                         </div>
                         <div class="container text-center" style="width:100%">
                             <button class="btn btn-outline-secondary" id="editGroup" onclick="newTransaction(${itemID})">
-                                <i class="fa fa-save"></i> Save</button>
+                                <i class="fa fa-save"></i> Kaydet</button>
                             <button class="btn btn-outline-secondary" id="cancel" onclick="cancelDialog()">
-                                <i class="fa fa-close"></i> Cancel</button>
+                                <i class="fa fa-close"></i> İptal</button>
                         </div>`;
     $('#contentDiv').html(resultHTML);
     $('#date').datetimepicker({
