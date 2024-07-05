@@ -6,7 +6,9 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "predeploy" : "npm run build",
+"deploy" : "gh-pages -d build"
   },
   "author": "Jacob Mathew <simpleinventory@orangetreesoft.com>",
   "license": "Apache-2.0",
@@ -15,15 +17,17 @@
     "appId": "com.orangetreesoft.simple_inventory",
     "productName": "Simple Inventory",
     "linux": {
-        "category": "Utils",
-        "icon": "assets/icons",
-        "packageCategory": "utils", 
-        "maintainer": "Jacob Mathew <simpleinventory@orangetreesoft.com>",
-        "target": [ "deb" ],
-        "synopsis": "Simple Invetory Management software built on Electron.JS"
+      "category": "Utils",
+      "icon": "assets/icons",
+      "packageCategory": "utils",
+      "maintainer": "Jacob Mathew <simpleinventory@orangetreesoft.com>",
+      "target": [
+        "deb"
+      ],
+      "synopsis": "Simple Invetory Management software built on Electron.JS"
     },
     "win": {
-        "icon": "assets/icon.ico"
+      "icon": "assets/icon.ico"
     }
   },
   "dependencies": {
@@ -33,6 +37,7 @@
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
-    "electron": "^8.4.1"
+    "electron": "^8.4.1",
+    "gh-pages": "^6.1.1"
   }
 }
